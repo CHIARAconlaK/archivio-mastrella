@@ -8,6 +8,7 @@ const logoFilter = 'brightness(0) saturate(100%) invert(83%) sepia(30%) saturate
 const CATEGORIE = ['TUTTI', 'ARCHITETTURA', 'INTERIOR DESIGN', 'EXHIBITION DESIGN', 'PRODUCT DESIGN', 'FORNITORI']
 
 const ANNI = Array.from({ length: 2026 - 1985 + 1 }, (_, i) => 1985 + i)
+
 const ANNO_CORRENTE = 2026
 
 const placeholders = [
@@ -454,11 +455,95 @@ function TimelineLayout({ progetti, annoSelezionato, onSelectAnno }) {
   )
 }
 
+function BubbleMappa({ progetti, onSelectLocation, locationSelezionata }) {
+  const [countryPaths, setCountryPaths] = useState([])
+  const [hovered, setHovered] = useState(null)
+  const W = 960
+  const H = 500
+
+  // coordinate pre-calcolate per geoNaturalEarth1 scale=153 translate=[480,250]
+  const locations = [
+    { nome: 'ITALIA',        x: 510, y: 165, count: progetti.filter(p => p.luogo === 'ITALIA').length },
+    { nome: 'EMIRATI ARABI', x: 618, y: 210, count: progetti.filter(p => p.luogo === 'EMIRATI ARABI').length },
+    { nome: 'INDIA',         x: 660, y: 240, count: progetti.filter(p => p.luogo === 'INDIA').length },
+  ]
+
+  useEffect(() => {
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+      .then(r => r.json())
+      .then(async data => {
+        const [{ feature }, d3] = await Promise.all([
+          import('topojson-client'),
+          import('d3'),
+        ])
+        const countries = feature(data, data.objects.countries)
+        const projection = d3.geoNaturalEarth1()
+          .scale(153)
+          .translate([W / 2, H / 2])
+        const pathGen = d3.geoPath().projection(projection)
+        setCountryPaths(countries.features.map(f => ({ id: f.id, d: pathGen(f) })))
+      })
+      .catch(err => console.error('BubbleMappa fetch error:', err))
+  }, [])
+
+  return (
+    <div style={{ width: '100%', height: '65vh', background: '#2F1F11', position: 'relative' }}>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        style={{ width: '100%', height: '100%' }}
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <rect width={W} height={H} fill="#2F1F11" />
+
+        {countryPaths.map(c => (
+          <path key={c.id} d={c.d}
+            fill="#3D2A15" stroke="#F2C879" strokeWidth={0.3} strokeOpacity={0.4} />
+        ))}
+
+        {locations.map(loc => {
+          const r = Math.max(18, Math.min(45, loc.count * 7))
+          const isSelected = locationSelezionata === loc.nome
+          const isHover = hovered === loc.nome
+          const rEff = isHover ? r * 1.15 : r
+
+          return (
+            <g key={loc.nome} style={{ cursor: 'pointer' }}
+               onClick={() => onSelectLocation(loc.nome)}
+               onMouseEnter={() => setHovered(loc.nome)}
+               onMouseLeave={() => setHovered(null)}>
+              <circle cx={loc.x} cy={loc.y} r={rEff + 10}
+                fill="none" stroke="#F2C879" strokeWidth={0.5} strokeOpacity={0.25} />
+              <circle cx={loc.x} cy={loc.y} r={rEff}
+                fill={isSelected ? '#A64914' : '#F2C879'}
+                fillOpacity={isSelected || isHover ? 1 : 0.75}
+                stroke="#A64914" strokeWidth={1.5}
+                style={{ transition: 'all 0.3s ease' }} />
+              <text x={loc.x} y={loc.y + 1}
+                textAnchor="middle" dominantBaseline="middle"
+                fill="#2F1F11" fontSize={11} fontFamily="Archivo" fontWeight="500"
+                style={{ pointerEvents: 'none' }}>
+                {loc.count}
+              </text>
+              <text x={loc.x} y={loc.y - rEff - 10}
+                textAnchor="middle" fill="#F2C879"
+                fontSize={8} fontFamily="Archivo" letterSpacing={2}
+                style={{ pointerEvents: 'none' }}>
+                {loc.nome}
+              </text>
+            </g>
+          )
+        })}
+      </svg>
+    </div>
+  )
+}
+
 export default function ProgettiPage({ filtroAttivo, onBack }) {
   const [categoria, setCategoria] = useState('TUTTI')
   const [filtroSec, setFiltroSec] = useState('tutti')
 
   const tipoFiltro = TIPO_FILTRO_KEY[filtroAttivo] ?? null
+  console.log('[ProgettiPage] filtroAttivo:', filtroAttivo, '→ tipoFiltro:', tipoFiltro)
 
   const vociSecondarie = useMemo(() => {
     if (!tipoFiltro) return []
@@ -501,20 +586,18 @@ export default function ProgettiPage({ filtroAttivo, onBack }) {
         padding: '20px 40px',
         borderBottom: `1px solid rgba(242, 200, 121, 0.1)`,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-          <button
-            onClick={onBack}
-            style={{
-              fontFamily: archivo, fontSize: 9, fontWeight: 200,
-              letterSpacing: '0.3em', color: oro,
-              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-              opacity: 0.7,
-            }}
-          >
-            ← INDIETRO
-          </button>
-          <img src="/logo.png" alt="Archivio Mastrella" style={{ width: 140, filter: logoFilter }} />
-        </div>
+        <img src="/logo.png" alt="Archivio Mastrella" style={{ width: 140, filter: logoFilter }} />
+        <button
+          onClick={onBack}
+          style={{
+            fontFamily: archivo, fontSize: 9, fontWeight: 200,
+            letterSpacing: '0.3em', color: oro,
+            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+            opacity: 0.7,
+          }}
+        >
+          ← INDIETRO
+        </button>
       </div>
 
       {/* ── Barra filtri ── */}
@@ -537,8 +620,8 @@ export default function ProgettiPage({ filtroAttivo, onBack }) {
           ))}
         </div>
 
-        {/* Riga 2 — filtro secondario */}
-        {tipoFiltro !== 'anno' && vociSecondarie.length > 0 && (
+        {/* Riga 2 — filtro secondario (non per luogo: gestito dalla mappa) */}
+        {tipoFiltro !== 'anno' && tipoFiltro !== 'luogo' && vociSecondarie.length > 0 && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 32, flexWrap: 'wrap' }}>
             {vociSecondarie.map(v => (
               <FiltroVoce
@@ -552,13 +635,33 @@ export default function ProgettiPage({ filtroAttivo, onBack }) {
         )}
       </div>
 
-      {/* ── Timeline layout o griglia ── */}
+      {/* ── Contenuto principale ── */}
       {tipoFiltro === 'anno' ? (
         <TimelineLayout
           progetti={progettiPerTimeline}
           annoSelezionato={filtroSec}
           onSelectAnno={(v) => setFiltroSec(prev => prev === v ? 'tutti' : v)}
         />
+      ) : tipoFiltro === 'luogo' ? (
+        <>
+          <BubbleMappa
+            progetti={progettiPerTimeline}
+            locationSelezionata={filtroSec}
+            onSelectLocation={(v) => setFiltroSec(prev => prev === v ? 'tutti' : v)}
+          />
+          {progettiVisibili.length > 0 && (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: 2,
+              padding: 2,
+            }}>
+              {progettiVisibili.map(p => (
+                <ProgettoCard key={p.id} progetto={p} />
+              ))}
+            </div>
+          )}
+        </>
       ) : progettiVisibili.length === 0 ? (
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',

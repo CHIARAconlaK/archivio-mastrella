@@ -154,10 +154,10 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
     const handleTouchStart = (e) => { touchStartY = e.touches[0].clientY }
     const handleTouchEnd = (e) => {
       const delta = touchStartY - e.changedTouches[0].clientY
-      if (Math.abs(delta) > 40 && !isScrolling) {
-        isScrolling = true
+      if (Math.abs(delta) > 40 && !isScrolling.current) {
+        isScrolling.current = true
         setCurrentIndex(prev => delta > 0 ? Math.min(prev + 1, progetti.length - 1) : Math.max(prev - 1, 0))
-        setTimeout(() => { isScrolling = false }, 1200)
+        setTimeout(() => { isScrolling.current = false }, 1200)
       }
     }
     window.addEventListener('touchstart', handleTouchStart, { passive: true })
