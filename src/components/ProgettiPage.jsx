@@ -10,6 +10,17 @@ const CATEGORIE = ['TUTTI', 'ARCHITETTURA', 'INTERIOR DESIGN', 'EXHIBITION DESIG
 const ANNI = Array.from({ length: 2026 - 1985 + 1 }, (_, i) => 1985 + i)
 const ANNO_CORRENTE = 2026
 
+const placeholders = [
+  "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=400",
+  "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=400",
+  "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400",
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400",
+  "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400",
+  "https://images.unsplash.com/photo-1449844908441-8829872d2607?w=400",
+  "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400",
+  "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=400",
+]
+
 const TIPO_FILTRO_KEY = {
   ANNO: 'anno',
   LUOGO: 'luogo',
@@ -44,142 +55,6 @@ const tuttiProgetti = [
   { id: 23, titolo: 'MOSTRA CERAMICA',     categoria: 'exhibition design', anno: '2022', luogo: 'ITALIA',        materiale: 'Ceramica',   stato: 'COMPLETATO', tipologia: 'Espositiva',    img: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=600' },
   { id: 24, titolo: 'FORNITORE OTTONE',    categoria: 'fornitori',         anno: '2020', luogo: 'ITALIA',        materiale: 'Ottone',     stato: 'COMPLETATO', tipologia: 'Fornitura',     img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600' },
 ]
-
-function TimelineAnni({ annoSelezionato, onSelect }) {
-  const scrollRef = useRef(null)
-  const [visibili, setVisibili] = useState(false)
-  const [hoverAnno, setHoverAnno] = useState(null)
-
-  useEffect(() => {
-    const t = setTimeout(() => setVisibili(true), 50)
-    return () => clearTimeout(t)
-  }, [])
-
-  useEffect(() => {
-    const el = scrollRef.current
-    if (!el) return
-    el.scrollLeft = el.scrollWidth
-  }, [])
-
-  useEffect(() => {
-    const el = scrollRef.current
-    if (!el) return
-    const onWheel = (e) => {
-      e.preventDefault()
-      el.scrollLeft -= e.deltaY * 2
-    }
-    el.addEventListener('wheel', onWheel, { passive: false })
-    return () => el.removeEventListener('wheel', onWheel)
-  }, [])
-
-  const scorri = (dir) => {
-    scrollRef.current?.scrollBy({ left: dir * 5 * 48, behavior: 'smooth' })
-  }
-
-  const handleSelect = (anno) => {
-    onSelect(anno.toString())
-    const el = scrollRef.current
-    if (!el) return
-    const idx = ANNI.indexOf(anno)
-    const targetLeft = idx * 48 - el.clientWidth / 2 + 24
-    el.scrollTo({ left: targetLeft, behavior: 'smooth' })
-  }
-
-  const frecceStyle = {
-    fontFamily: archivo, fontSize: 16, color: oro,
-    background: 'none', border: 'none', cursor: 'pointer',
-    padding: '0 16px', flexShrink: 0, lineHeight: 1,
-  }
-
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
-      {/* Freccia sinistra — avanti (verso 2026) */}
-      <button
-        onClick={() => scorri(1)}
-        onMouseEnter={e => e.target.style.opacity = 1}
-        onMouseLeave={e => e.target.style.opacity = 0.5}
-        style={{ ...frecceStyle, opacity: 0.5, transition: 'opacity 0.2s' }}
-      >
-        ›
-      </button>
-
-      {/* Contenitore scrollabile */}
-      <div
-        ref={scrollRef}
-        style={{
-          flex: 1, overflowX: 'hidden',
-          position: 'relative',
-          padding: '0 8px',
-          cursor: 'ew-resize',
-        }}
-      >
-        {/* Linea orizzontale */}
-        <div style={{
-          position: 'absolute', left: 0, right: 0, top: 21,
-          height: 1, background: 'rgba(242, 200, 121, 0.3)',
-          pointerEvents: 'none',
-        }} />
-
-        {/* Anni */}
-        <div style={{ display: 'flex', gap: 42, paddingBottom: 4 }}>
-          {ANNI.map((anno, i) => {
-            const isSelected = annoSelezionato === anno.toString()
-            const isCurrent = anno === ANNO_CORRENTE
-            const isHover = hoverAnno === anno
-            const showActive = isSelected || isHover
-
-            return (
-              <div
-                key={anno}
-                onClick={() => handleSelect(anno)}
-                onMouseEnter={() => setHoverAnno(anno)}
-                onMouseLeave={() => setHoverAnno(null)}
-                style={{
-                  display: 'flex', flexDirection: 'column',
-                  alignItems: 'center', gap: 8,
-                  cursor: 'pointer', flexShrink: 0,
-                  opacity: visibili ? 1 : 0,
-                  transform: visibili ? 'translateX(0)' : 'translateX(-16px)',
-                  transition: `opacity 0.3s ease ${i * 20}ms, transform 0.3s ease ${i * 20}ms`,
-                }}
-              >
-                {/* Punto */}
-                <div style={{
-                  width: 6, height: 6, borderRadius: '50%', zIndex: 1,
-                  background: isCurrent ? 'transparent' : oro,
-                  border: isCurrent ? '1.5px solid #A64914' : 'none',
-                  opacity: showActive ? 1 : 0.4,
-                  transform: isSelected ? 'scale(2)' : isHover ? 'scale(1.5)' : 'scale(1)',
-                  transition: 'opacity 0.2s ease, transform 0.2s ease',
-                }} />
-                {/* Anno */}
-                <div style={{
-                  fontFamily: archivo, fontSize: 9, fontWeight: 200,
-                  letterSpacing: '0.2em', color: oro,
-                  opacity: showActive ? 1 : 0.4,
-                  transition: 'opacity 0.2s ease',
-                  userSelect: 'none',
-                }}>
-                  {anno}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Freccia destra — indietro (verso 1985) */}
-      <button
-        onClick={() => scorri(-1)}
-        onMouseEnter={e => e.target.style.opacity = 1}
-        onMouseLeave={e => e.target.style.opacity = 0.5}
-        style={{ ...frecceStyle, opacity: 0.5, transition: 'opacity 0.2s' }}
-      >
-        ‹
-      </button>
-    </div>
-  )
-}
 
 function FiltroVoce({ label, attivo, onClick }) {
   const [hover, setHover] = useState(false)
@@ -257,7 +132,7 @@ function FrecciaTLBtn({ direzione, onClick }) {
         transition: 'background 0.2s ease',
       }}
     >
-      {direzione === -1 ? '›' : '‹'}
+      {direzione === -1 ? '‹' : '›'}
     </button>
   )
 }
@@ -309,7 +184,7 @@ function TimelineProgetti({ progetti, annoSelezionato }) {
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
-    el.scrollLeft = el.scrollWidth
+    el.scrollLeft = 0
   }, [])
 
   useEffect(() => {
@@ -317,7 +192,7 @@ function TimelineProgetti({ progetti, annoSelezionato }) {
     if (!el) return
     const onWheel = (e) => {
       e.preventDefault()
-      el.scrollLeft -= e.deltaY * 1.5
+      el.scrollLeft += e.deltaY * 1.5
     }
     el.addEventListener('wheel', onWheel, { passive: false })
     return () => el.removeEventListener('wheel', onWheel)
@@ -339,7 +214,7 @@ function TimelineProgetti({ progetti, annoSelezionato }) {
   return (
     <div style={{ position: 'relative', height: 420 }}>
       <style>{`#tl-progetti::-webkit-scrollbar{display:none}`}</style>
-      <FrecciaTLBtn direzione={-1} onClick={() => scorri(1)} />
+      <FrecciaTLBtn direzione={-1} onClick={() => scorri(-1)} />
 
       <div
         id="tl-progetti"
@@ -355,26 +230,31 @@ function TimelineProgetti({ progetti, annoSelezionato }) {
         ))}
       </div>
 
-      <FrecciaTLBtn direzione={1} onClick={() => scorri(-1)} />
+      <FrecciaTLBtn direzione={1} onClick={() => scorri(1)} />
     </div>
   )
 }
 
 function NodoAnno({ anno, progetto, isSelected, isAbove, visibile, delay, onClick }) {
-  const hasProject = !!progetto
-  const width = hasProject ? 340 : 80
-  const dotSize = isSelected ? 14 : (hasProject ? 8 : 4)
+  const isPlaceholder = !!progetto?.isPlaceholder
+  const hasProject = !!progetto && !isPlaceholder
+  const isFuturo = anno > 2028
+  const width = progetto ? 340 : 80
+  const dotSize = isSelected ? 14 : (progetto ? 8 : 4)
 
-  const projectContent = (
+  const projectContent = progetto ? (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <img
-        src={progetto.img}
-        alt={progetto.titolo}
-        style={{
-          width: 280, height: 180, objectFit: 'cover', display: 'block',
-          border: isSelected ? '1px solid rgba(242,200,121,0.5)' : 'none',
-        }}
-      />
+      <div style={{ width: 280, height: 180, overflow: 'hidden', position: 'relative' }}>
+        <img
+          src={progetto.img}
+          alt={progetto.titolo}
+          className="timeline-img"
+          style={{
+            width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+            border: isSelected ? '1px solid rgba(242,200,121,0.5)' : 'none',
+          }}
+        />
+      </div>
       <div style={{
         fontFamily: archivo, fontSize: 9, fontWeight: 300,
         letterSpacing: '0.25em', color: oro, textAlign: 'center',
@@ -389,7 +269,7 @@ function NodoAnno({ anno, progetto, isSelected, isAbove, visibile, delay, onClic
         {progetto.categoria}
       </div>
     </div>
-  )
+  ) : null
 
   return (
     <div
@@ -410,10 +290,10 @@ function NodoAnno({ anno, progetto, isSelected, isAbove, visibile, delay, onClic
         alignItems: 'center', justifyContent: 'flex-end',
         paddingBottom: 8, boxSizing: 'border-box',
       }}>
-        {hasProject && isAbove && projectContent}
+        {progetto && isAbove && projectContent}
         <div style={{
           fontFamily: archivo,
-          fontSize: hasProject ? 48 : 10,
+          fontSize: progetto ? 48 : 10,
           fontWeight: 100,
           color: oro,
           opacity: isSelected ? 1 : (hasProject ? 0.9 : 0.3),
@@ -449,17 +329,17 @@ function NodoAnno({ anno, progetto, isSelected, isAbove, visibile, delay, onClic
         alignItems: 'center', justifyContent: 'flex-start',
         paddingTop: 8, boxSizing: 'border-box',
       }}>
-        {hasProject && !isAbove && projectContent}
+        {progetto && !isAbove && projectContent}
       </div>
     </div>
   )
 }
 
 function TimelineLayout({ progetti, annoSelezionato, onSelectAnno }) {
-  const scrollRef = useRef(null)
+  const timelineRef = useRef(null)
   const [visibili, setVisibili] = useState(false)
 
-  const anniTL = useMemo(() => [...ANNI].reverse(), [])
+  const anniTL = useMemo(() => [...ANNI], [])
 
   const progettiPerAnno = useMemo(() => {
     const map = {}
@@ -470,9 +350,6 @@ function TimelineLayout({ progetti, annoSelezionato, onSelectAnno }) {
     return map
   }, [progetti])
 
-  const anniConProgetti = useMemo(() =>
-    anniTL.filter(a => progettiPerAnno[String(a)]?.length > 0)
-  , [anniTL, progettiPerAnno])
 
   useEffect(() => {
     const t = setTimeout(() => setVisibili(true), 100)
@@ -480,29 +357,32 @@ function TimelineLayout({ progetti, annoSelezionato, onSelectAnno }) {
   }, [])
 
   useEffect(() => {
-    const el = scrollRef.current
+    const el = timelineRef.current
     if (!el) return
-    const onWheel = (e) => {
+
+    const handleWheel = (e) => {
       e.preventDefault()
-      el.scrollLeft -= e.deltaY * 2
+      e.stopPropagation()
+      el.scrollLeft += e.deltaY + e.deltaX
     }
-    el.addEventListener('wheel', onWheel, { passive: false })
-    return () => el.removeEventListener('wheel', onWheel)
+
+    el.addEventListener('wheel', handleWheel, { passive: false })
+
+    return () => {
+      el.removeEventListener('wheel', handleWheel)
+    }
   }, [])
 
   useEffect(() => {
     if (!annoSelezionato || annoSelezionato === 'tutti') return
-    const el = scrollRef.current
+    const el = timelineRef.current
     if (!el) return
-    let left = 0
-    for (const a of anniTL) {
-      if (String(a) === annoSelezionato) break
-      left += progettiPerAnno[String(a)]?.length > 0 ? 340 : 80
-    }
-    el.scrollTo({ left: Math.max(0, left - el.clientWidth / 2 + 170), behavior: 'smooth' })
+    const idx = anniTL.indexOf(Number(annoSelezionato))
+    if (idx === -1) return
+    el.scrollTo({ left: Math.max(0, idx * 340 - el.clientWidth / 2 + 170), behavior: 'smooth' })
   }, [annoSelezionato])
 
-  const scorri = (dir) => scrollRef.current?.scrollBy({ left: dir * 340, behavior: 'smooth' })
+  const scorri = (dir) => timelineRef.current?.scrollBy({ left: dir * 340, behavior: 'smooth' })
 
   const btnStyle = (isLeft) => ({
     position: 'absolute', top: '50%', transform: 'translateY(-50%)',
@@ -513,12 +393,24 @@ function TimelineLayout({ progetti, annoSelezionato, onSelectAnno }) {
 
   return (
     <div style={{ position: 'relative', height: 'calc(100vh - 180px)' }}>
-      <style>{`#tl-layout::-webkit-scrollbar{display:none}`}</style>
+      <style>{`
+        #tl-layout::-webkit-scrollbar { display: none }
+        .timeline-img {
+          transform: scale(1);
+          filter: brightness(1) saturate(1);
+          opacity: 1;
+          transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .timeline-img:hover {
+          transform: scale(1.08);
+          filter: brightness(1.05) saturate(1);
+        }
+      `}</style>
       <button style={btnStyle(true)} onClick={() => scorri(-1)}>‹</button>
 
       <div
         id="tl-layout"
-        ref={scrollRef}
+        ref={timelineRef}
         style={{
           height: '100%', overflowX: 'auto', overflowY: 'hidden',
           scrollbarWidth: 'none', display: 'flex', alignItems: 'stretch',
@@ -534,11 +426,12 @@ function TimelineLayout({ progetti, annoSelezionato, onSelectAnno }) {
 
           {anniTL.map((anno, i) => {
             const key = String(anno)
-            const hasProject = !!progettiPerAnno[key]?.length
-            const progetto = hasProject ? progettiPerAnno[key][0] : null
+            const hasRealProject = !!progettiPerAnno[key]?.length
+            const progetto = hasRealProject
+              ? progettiPerAnno[key][0]
+              : { img: placeholders[anno % placeholders.length], titolo: 'ARCHIVIO ' + anno, categoria: 'archivio', isPlaceholder: true }
             const isSelected = annoSelezionato === key
-            const orderIdx = anniConProgetti.indexOf(anno)
-            const isAbove = orderIdx % 2 === 0
+            const isAbove = i % 2 === 0
 
             return (
               <NodoAnno
@@ -549,7 +442,7 @@ function TimelineLayout({ progetti, annoSelezionato, onSelectAnno }) {
                 isAbove={isAbove}
                 visibile={visibili}
                 delay={i * 30}
-                onClick={() => hasProject && onSelectAnno(key)}
+                onClick={() => hasRealProject && onSelectAnno(key)}
               />
             )
           })}
@@ -644,20 +537,7 @@ export default function ProgettiPage({ filtroAttivo, onBack }) {
           ))}
         </div>
 
-        {/* Riga 2 — timeline anni o filtro secondario */}
-        {tipoFiltro === 'anno' && (
-          <div style={{
-            background: marrone,
-            padding: '12px 0',
-            borderTop: `1px solid rgba(242, 200, 121, 0.08)`,
-          }}>
-            <TimelineAnni
-              annoSelezionato={filtroSec}
-              onSelect={(v) => setFiltroSec(prev => prev === v ? 'tutti' : v)}
-            />
-          </div>
-        )}
-
+        {/* Riga 2 — filtro secondario */}
         {tipoFiltro !== 'anno' && vociSecondarie.length > 0 && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 32, flexWrap: 'wrap' }}>
             {vociSecondarie.map(v => (
