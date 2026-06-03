@@ -5,13 +5,41 @@ import * as THREE from 'three'
 import Scene from './components/Scene'
 import UI from './components/UI'
 import LandingPage from './components/LandingPage'
+import ProgettiPage from './components/ProgettiPage'
+import StudioPage from './components/StudioPage'
+import ContattiPage from './components/ContattiPage'
 
 export default function App() {
   const [vista, setVista] = useState('landing')
   const [filtro, setFiltro] = useState('TUTTI')
+  const [filtroProgetti, setFiltroProgetti] = useState(null)
 
   if (vista === 'landing') {
-    return <LandingPage onEnter={() => setVista('archivio')} />
+    return (
+      <LandingPage
+        onEnter={() => setVista('archivio')}
+        onOpenProgetti={(f) => { setFiltroProgetti(f); setVista('progetti') }}
+        onOpenStudio={() => setVista('studio')}
+        onOpenContatti={() => setVista('contatti')}
+      />
+    )
+  }
+
+  if (vista === 'progetti') {
+    return (
+      <ProgettiPage
+        filtroAttivo={filtroProgetti}
+        onBack={() => setVista('landing')}
+      />
+    )
+  }
+
+  if (vista === 'studio') {
+    return <StudioPage onBack={() => setVista('landing')} />
+  }
+
+  if (vista === 'contatti') {
+    return <ContattiPage onBack={() => setVista('landing')} />
   }
 
   return (
