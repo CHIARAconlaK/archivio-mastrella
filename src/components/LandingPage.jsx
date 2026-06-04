@@ -411,6 +411,7 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
       {/* ── Card centrale ── */}
       <div
         ref={cardRef}
+        onClick={handleCardClick}
         style={{
           position: 'fixed', top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
@@ -419,6 +420,7 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
           backgroundColor: p0.cardBg,
           borderRadius: 0,
           display: 'flex', alignItems: 'center', gap: 36,
+          cursor: 'pointer',
         }}
       >
         <img
