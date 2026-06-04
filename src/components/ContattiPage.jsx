@@ -38,27 +38,27 @@ export default function ContattiPage({ onBack }) {
       <div style={{
         position: 'sticky', top: 0, zIndex: 100,
         background: marrone,
-        display: 'flex', alignItems: 'center', gap: 32,
+        display: 'flex', alignItems: 'center',
         padding: '20px 40px',
         borderBottom: `1px solid rgba(242, 200, 121, 0.1)`,
         boxSizing: 'border-box',
       }}>
+        <img
+          src="/logo.png"
+          alt="Archivio Mastrella"
+          style={{ width: 140, filter: 'brightness(0) saturate(100%) invert(83%) sepia(30%) saturate(600%) hue-rotate(340deg) brightness(1.05)' }}
+        />
         <button
           onClick={onBack}
           style={{
             fontFamily: archivo, fontSize: 9, fontWeight: 200,
             letterSpacing: '0.3em', color: oro,
             background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-            opacity: 0.7,
+            opacity: 0.7, marginLeft: 'auto',
           }}
         >
           ← INDIETRO
         </button>
-        <img
-          src="/logo.png"
-          alt="Archivio Mastrella"
-          style={{ width: 140, filter: 'brightness(0) invert(1)' }}
-        />
       </div>
 
       {/* ── Contenuto ── */}

@@ -104,9 +104,24 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
   const [dropdownAperto, setDropdownAperto] = useState(false)
   const dropdownRef = useRef(null)
   const hasMounted = useRef(false)
+  const editorialeRef = useRef(false)
+  const pannelloRef = useRef()
+  const contenutoEditorialeRef = useRef()
+  const immagineMaterialeRef = useRef()
+  const [editoriale, setEditoriale] = useState(false)
+  const containerSxRef = useRef()
+  const containerDxRef = useRef()
+  const overlayImgRef = useRef()
+  const immagineModeRef = useRef(false)
+  const colonnaClickataRef = useRef(null)
+  const [immagineMode, setImmagineMode] = useState(false)
 
   useLayoutEffect(() => {
     gsap.set(colonnaDxRef.current, { y: -(N - 1) * window.innerHeight })
+    gsap.set(pannelloRef.current, { scaleX: 0, transformOrigin: 'left center' })
+    gsap.set(contenutoEditorialeRef.current, { opacity: 0 })
+    gsap.set(immagineMaterialeRef.current, { opacity: 0, scale: 1.2 })
+    gsap.set(overlayImgRef.current, { opacity: 0 })
   }, [])
 
   // Animazioni GSAP al cambio di progetto (salta il mount iniziale)
@@ -129,12 +144,88 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
     gsap.to(cardRef.current, { backgroundColor: p.cardBg, duration: 0.8, ease: 'power2.inOut' })
   }, [currentIndex])
 
+  useEffect(() => { editorialeRef.current = editoriale }, [editoriale])
+
+  const handleCardClick = () => {
+    handleImmagineClick()
+  }
+
+  const handleChiudi = () => {
+    const tl = gsap.timeline({
+      onComplete: () => {
+        setEditoriale(false)
+        gsap.to(cardRef.current, { opacity: 1, scale: 1, duration: 0.3, ease: 'power2.out' })
+      },
+    })
+    tl.to(contenutoEditorialeRef.current, { opacity: 0, y: 10, duration: 0.3 })
+    tl.to(pannelloRef.current, {
+      scaleX: 0, transformOrigin: 'left center',
+      duration: 0.4, ease: 'power2.inOut',
+    })
+  }
+
+  const handleImmagineClick = () => {
+    if (immagineModeRef.current || editorialeRef.current) return
+    immagineModeRef.current = true
+    setImmagineMode(true)
+
+    // Indice PARI  → sinistra=materiale, destra=edificio
+    // Indice DISPARI → sinistra=edificio, destra=materiale
+    const edificioIsLeft = currentIndex % 2 !== 0
+    colonnaClickataRef.current = edificioIsLeft ? 'sx' : 'dx'
+
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+    const cEdificio = edificioIsLeft ? containerSxRef.current : containerDxRef.current
+    const cMateriale = edificioIsLeft ? containerDxRef.current : containerSxRef.current
+    const p = progetti[currentIndex]
+
+    // Normalizza entrambe a left-based prima di animare
+    gsap.set(cEdificio, { left: edificioIsLeft ? 0 : vw / 2, right: 'auto', top: 0, width: vw / 2, height: vh })
+    gsap.set(cMateriale, { left: edificioIsLeft ? vw / 2 : 0, right: 'auto', top: 0, width: vw / 2, height: vh, zIndex: 'auto' })
+    gsap.set(cMateriale, { padding: 8, boxSizing: 'border-box', backgroundColor: p.cardBg, outline: `1px solid ${p.cardBg}` })
+
+    const tl = gsap.timeline()
+    tl.to(cardRef.current, { opacity: 0, scale: 0.95, duration: 0.2, ease: 'power2.in' })
+    tl.to(cEdificio, { left: 0, width: vw, duration: 0.7, ease: 'power2.inOut' }, '<')
+    tl.to(cMateriale, {
+      left: 48, top: vh - 280 - 48,
+      width: 280, height: 280, zIndex: 50,
+      duration: 0.7, ease: 'power2.inOut',
+    }, '<')
+    tl.fromTo(overlayImgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, '-=0.2')
+  }
+
+  const handleChiudiImmagine = () => {
+    const isLeft = colonnaClickataRef.current === 'sx'
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+    const cEdificio = isLeft ? containerSxRef.current : containerDxRef.current
+    const cMateriale = isLeft ? containerDxRef.current : containerSxRef.current
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        gsap.set([containerSxRef.current, containerDxRef.current], { clearProps: 'all' })
+        gsap.to(cardRef.current, { opacity: 1, scale: 1, duration: 0.3, ease: 'power2.out' })
+        setImmagineMode(false)
+        immagineModeRef.current = false
+      },
+    })
+    tl.to(overlayImgRef.current, { opacity: 0, duration: 0.25 })
+    tl.to(cMateriale, {
+      left: isLeft ? vw / 2 : 0, top: 0,
+      width: vw / 2, height: vh, zIndex: 0,
+      duration: 0.6, ease: 'power2.inOut',
+    })
+    tl.to(cEdificio, { left: isLeft ? 0 : vw / 2, width: vw / 2, duration: 0.6, ease: 'power2.inOut' }, '<')
+  }
+
   // Listener wheel e touch
   const isScrolling = useRef(false)
 
   const handleWheel = useCallback((e) => {
     e.preventDefault()
-    if (isScrolling.current) return
+    if (isScrolling.current || editorialeRef.current || immagineModeRef.current) return
     isScrolling.current = true
     if (e.deltaY > 0) {
       setCurrentIndex(prev => Math.min(prev + 1, progetti.length - 1))
@@ -154,7 +245,7 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
     const handleTouchStart = (e) => { touchStartY = e.touches[0].clientY }
     const handleTouchEnd = (e) => {
       const delta = touchStartY - e.changedTouches[0].clientY
-      if (Math.abs(delta) > 40 && !isScrolling.current) {
+      if (Math.abs(delta) > 40 && !isScrolling.current && !editorialeRef.current && !immagineModeRef.current) {
         isScrolling.current = true
         setCurrentIndex(prev => delta > 0 ? Math.min(prev + 1, progetti.length - 1) : Math.max(prev - 1, 0))
         setTimeout(() => { isScrolling.current = false }, 1200)
@@ -286,7 +377,11 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
       </div>
 
       {/* ── Colonna sinistra ── */}
-      <div style={{ position: 'fixed', left: 0, top: 0, width: '50vw', height: '100vh', overflow: 'hidden' }}>
+      <div
+        ref={containerSxRef}
+        onClick={handleImmagineClick}
+        style={{ position: 'fixed', left: 0, top: 0, width: '50vw', height: '100vh', overflow: 'hidden', cursor: 'pointer' }}
+      >
         <div ref={colonnaSxRef} style={{ willChange: 'transform' }}>
           {progetti.map((p, i) => (
             <div key={i} style={{ width: '100%', height: '100vh' }}>
@@ -298,7 +393,11 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
       </div>
 
       {/* ── Colonna destra (stack inverso) ── */}
-      <div style={{ position: 'fixed', right: 0, top: 0, width: '50vw', height: '100vh', overflow: 'hidden' }}>
+      <div
+        ref={containerDxRef}
+        onClick={handleImmagineClick}
+        style={{ position: 'fixed', right: 0, top: 0, width: '50vw', height: '100vh', overflow: 'hidden', cursor: 'pointer' }}
+      >
         <div ref={colonnaDxRef} style={{ willChange: 'transform' }}>
           {progettiInversi.map((p, i) => (
             <div key={i} style={{ width: '100%', height: '100vh' }}>
@@ -312,6 +411,7 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
       {/* ── Card centrale ── */}
       <div
         ref={cardRef}
+        onClick={handleCardClick}
         style={{
           position: 'fixed', top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
@@ -320,6 +420,7 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
           backgroundColor: p0.cardBg,
           borderRadius: 0,
           display: 'flex', alignItems: 'center', gap: 36,
+          cursor: 'pointer',
         }}
       >
         <img
@@ -346,6 +447,131 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
             }}
           >
             {p0.materiale}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Overlay immagine: testi + chiudi ── */}
+      <div
+        ref={overlayImgRef}
+        style={{
+          position: 'fixed', inset: 0, zIndex: 155,
+          pointerEvents: 'none',
+        }}
+      >
+        {/* Testi bottom-right */}
+        <div style={{
+          position: 'absolute', bottom: 80, right: 48,
+          textAlign: 'right',
+        }}>
+          <div style={{
+            fontFamily: archivo, fontSize: 72, fontWeight: 100,
+            letterSpacing: '0.05em', color: 'white', opacity: 0.9,
+            lineHeight: 1,
+          }}>
+            {progetti[currentIndex].nome}
+          </div>
+          <div style={{
+            fontFamily: archivo, fontSize: 12, fontWeight: 200,
+            letterSpacing: '0.3em', color: 'white', opacity: 0.6,
+            marginTop: 14, textTransform: 'uppercase',
+          }}>
+            {progetti[currentIndex].materiale}
+          </div>
+        </div>
+
+        {/* Bottone chiudi X */}
+        <button
+          onClick={handleChiudiImmagine}
+          onMouseEnter={e => e.currentTarget.style.opacity = 1}
+          onMouseLeave={e => e.currentTarget.style.opacity = 0.7}
+          style={{
+            position: 'absolute', top: 32, right: 32,
+            pointerEvents: 'auto',
+            fontFamily: archivo, fontSize: 24, fontWeight: 100,
+            color: 'white', background: 'none', border: 'none',
+            cursor: 'pointer', opacity: 0.7,
+            lineHeight: 1, padding: '4px 8px',
+            transition: 'opacity 0.2s ease',
+          }}
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* ── Pannello editoriale (split-screen wipe) ── */}
+      <div
+        ref={pannelloRef}
+        style={{
+          position: 'fixed', top: 0, left: '50vw',
+          width: '50vw', height: '100vh',
+          backgroundColor: progetti[currentIndex].cardBg,
+          zIndex: 150,
+        }}
+      >
+        <div
+          ref={contenutoEditorialeRef}
+          style={{
+            height: '100%',
+            display: 'flex', flexDirection: 'column',
+            padding: '96px 40px 48px',
+            boxSizing: 'border-box',
+          }}
+        >
+          {/* Immagine materiale come card */}
+          <div style={{ overflow: 'hidden', width: '80%', margin: '0 auto' }}>
+            <img
+              ref={immagineMaterialeRef}
+              src={progetti[currentIndex].imgSinistra}
+              alt=""
+              style={{
+                width: '100%', aspectRatio: '4/3',
+                objectFit: 'cover', display: 'block',
+              }}
+            />
+          </div>
+
+          {/* Testi */}
+          <div style={{ marginTop: 40, paddingLeft: 4 }}>
+            <div style={{
+              fontFamily: archivo,
+              fontSize: 'clamp(28px, 3.5vw, 48px)',
+              fontWeight: 100,
+              letterSpacing: '0.1em',
+              color: progetti[currentIndex].accent,
+              lineHeight: 1.1,
+            }}>
+              {progetti[currentIndex].nome}
+            </div>
+            <div style={{
+              fontFamily: archivo, fontSize: 11, fontWeight: 200,
+              letterSpacing: '0.3em',
+              color: progetti[currentIndex].accent,
+              opacity: 0.6,
+              marginTop: 16,
+              textTransform: 'uppercase',
+            }}>
+              {progetti[currentIndex].materiale}
+            </div>
+          </div>
+
+          {/* Bottone CHIUDI */}
+          <div style={{ marginTop: 'auto' }}>
+            <button
+              onClick={handleChiudi}
+              style={{
+                fontFamily: archivo, fontSize: 9, fontWeight: 200,
+                letterSpacing: '0.3em',
+                color: progetti[currentIndex].accent,
+                background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+                opacity: 0.7,
+                transition: 'opacity 0.2s ease',
+              }}
+              onMouseEnter={e => e.currentTarget.style.opacity = 1}
+              onMouseLeave={e => e.currentTarget.style.opacity = 0.7}
+            >
+              ← CHIUDI
+            </button>
           </div>
         </div>
       </div>

@@ -3,7 +3,8 @@ import { useState, useMemo, useRef, useEffect } from 'react'
 const archivo = "'Archivo', sans-serif"
 const oro = '#F2C879'
 const marrone = '#2F1F11'
-const logoFilter = 'brightness(0) saturate(100%) invert(83%) sepia(30%) saturate(600%) hue-rotate(340deg) brightness(1.05)'
+const celeste = '#91B0D9'
+const logoFilter = 'brightness(0) saturate(100%) invert(72%) sepia(23%) saturate(500%) hue-rotate(180deg)'
 
 const CATEGORIE = ['TUTTI', 'ARCHITETTURA', 'INTERIOR DESIGN', 'EXHIBITION DESIGN', 'PRODUCT DESIGN', 'FORNITORI']
 
@@ -66,10 +67,10 @@ function FiltroVoce({ label, attivo, onClick }) {
       onMouseLeave={() => setHover(false)}
       style={{
         fontFamily: archivo, fontSize: 9, fontWeight: 200,
-        letterSpacing: '0.3em', color: oro,
+        letterSpacing: '0.3em', color: celeste,
         background: 'none', border: 'none', cursor: 'pointer', padding: 0,
         opacity: attivo || hover ? 1 : 0.5,
-        borderBottom: attivo ? `1px solid ${oro}` : '1px solid transparent',
+        borderBottom: attivo ? `1px solid ${celeste}` : '1px solid transparent',
         paddingBottom: 1,
         transition: 'opacity 0.2s ease',
         whiteSpace: 'nowrap',
@@ -102,13 +103,45 @@ function ProgettoCard({ progetto }) {
       }}>
         <span style={{
           fontFamily: archivo, fontSize: 11, fontWeight: 300,
-          letterSpacing: '0.3em', color: oro,
+          letterSpacing: '0.3em', color: celeste,
           opacity: hover ? 1 : 0,
           transition: 'opacity 0.3s ease',
           textAlign: 'center', padding: '0 16px',
         }}>
           {progetto.titolo}
         </span>
+      </div>
+    </div>
+  )
+}
+
+function CardLuogo({ progetto }) {
+  return (
+    <div style={{
+      background: '#2F1F11',
+      border: '1px solid rgba(145,176,217,0.2)',
+      overflow: 'hidden',
+    }}>
+      <div style={{ aspectRatio: '4/3', overflow: 'hidden' }}>
+        <img
+          src={progetto.img}
+          alt={progetto.titolo}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        />
+      </div>
+      <div style={{ padding: '14px 18px' }}>
+        <div style={{
+          fontFamily: archivo, fontSize: 11, fontWeight: 300,
+          letterSpacing: '0.3em', color: '#91B0D9',
+        }}>
+          {progetto.titolo}
+        </div>
+        <div style={{
+          fontFamily: archivo, fontSize: 9, fontWeight: 200,
+          color: '#91B0D9', opacity: 0.5, marginTop: 6,
+        }}>
+          {progetto.anno} · {progetto.luogo}
+        </div>
       </div>
     </div>
   )
@@ -127,8 +160,8 @@ function FrecciaTLBtn({ direzione, onClick }) {
         [direzione === -1 ? 'left' : 'right']: 16,
         zIndex: 10,
         background: hover ? marrone : 'rgba(47,31,17,0.8)',
-        border: '1px solid rgba(242,200,121,0.3)',
-        color: oro, fontSize: 18, cursor: 'pointer',
+        border: `1px solid rgba(145,176,217,0.3)`,
+        color: celeste, fontSize: 18, cursor: 'pointer',
         padding: '12px 16px', lineHeight: 1,
         transition: 'background 0.2s ease',
       }}
@@ -153,18 +186,18 @@ function CardTimeline({ progetto, annoSelezionato }) {
       />
       <div style={{
         height: 140, background: marrone,
-        borderTop: '1px solid rgba(242,200,121,0.2)',
+        borderTop: `1px solid rgba(145,176,217,0.2)`,
         padding: '20px 24px', boxSizing: 'border-box',
       }}>
         <div style={{
           fontFamily: archivo, fontSize: 11, fontWeight: 300,
-          letterSpacing: '0.3em', color: oro,
+          letterSpacing: '0.3em', color: celeste,
         }}>
           {progetto.titolo}
         </div>
         <div style={{
           fontFamily: archivo, fontSize: 9, fontWeight: 200,
-          color: oro, opacity: 0.5, marginTop: 8,
+          color: celeste, opacity: 0.5, marginTop: 8,
         }}>
           {progetto.anno} · {progetto.luogo}
         </div>
@@ -252,19 +285,33 @@ function NodoAnno({ anno, progetto, isSelected, isAbove, visibile, delay, onClic
           className="timeline-img"
           style={{
             width: '100%', height: '100%', objectFit: 'cover', display: 'block',
-            border: isSelected ? '1px solid rgba(242,200,121,0.5)' : 'none',
+            border: isSelected ? '1px solid rgba(145,176,217,0.5)' : 'none',
           }}
         />
+        {isFuturo && isPlaceholder && (
+          <div style={{
+            position: 'absolute', inset: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(47,31,17,0.5)',
+          }}>
+            <span style={{
+              fontFamily: archivo, fontSize: 9, fontWeight: 200,
+              letterSpacing: '0.3em', color: celeste, opacity: 0.5,
+            }}>
+              IN ARRIVO
+            </span>
+          </div>
+        )}
       </div>
       <div style={{
         fontFamily: archivo, fontSize: 9, fontWeight: 300,
-        letterSpacing: '0.25em', color: oro, textAlign: 'center',
+        letterSpacing: '0.25em', color: celeste, textAlign: 'center',
         marginTop: 8, width: 280,
       }}>
         {progetto.titolo}
       </div>
       <div style={{
-        fontFamily: archivo, fontSize: 8, color: oro, opacity: 0.5,
+        fontFamily: archivo, fontSize: 8, color: celeste, opacity: 0.4,
         textAlign: 'center', marginTop: 4, width: 280,
       }}>
         {progetto.categoria}
@@ -296,8 +343,8 @@ function NodoAnno({ anno, progetto, isSelected, isAbove, visibile, delay, onClic
           fontFamily: archivo,
           fontSize: progetto ? 48 : 10,
           fontWeight: 100,
-          color: oro,
-          opacity: isSelected ? 1 : (hasProject ? 0.9 : 0.3),
+          color: celeste,
+          opacity: isSelected ? 1 : (hasProject ? 0.6 : 0.3),
           lineHeight: 1, textAlign: 'center',
           marginTop: hasProject && isAbove ? 8 : 0,
         }}>
@@ -308,7 +355,7 @@ function NodoAnno({ anno, progetto, isSelected, isAbove, visibile, delay, onClic
       {/* PUNTO */}
       <div style={{
         width: dotSize, height: dotSize, borderRadius: '50%',
-        background: isSelected ? '#A64914' : oro,
+        background: isSelected ? '#A64914' : celeste,
         flexShrink: 0, zIndex: 1,
         transition: 'width 0.2s ease, height 0.2s ease, background 0.2s ease',
       }} />
@@ -316,7 +363,7 @@ function NodoAnno({ anno, progetto, isSelected, isAbove, visibile, delay, onClic
       {/* FRECCIA */}
       {hasProject && (
         <div style={{
-          fontFamily: archivo, fontSize: 8, color: oro, opacity: 0.5,
+          fontFamily: archivo, fontSize: 8, color: celeste, opacity: 0.5,
           margin: '4px 0', flexShrink: 0, userSelect: 'none',
         }}>
           {isAbove ? '▲' : '▼'}
@@ -388,12 +435,12 @@ function TimelineLayout({ progetti, annoSelezionato, onSelectAnno }) {
   const btnStyle = (isLeft) => ({
     position: 'absolute', top: '50%', transform: 'translateY(-50%)',
     [isLeft ? 'left' : 'right']: 8, zIndex: 10,
-    background: 'rgba(47,31,17,0.8)', border: '1px solid rgba(242,200,121,0.3)',
-    color: oro, fontSize: 18, cursor: 'pointer', padding: '12px 16px', lineHeight: 1,
+    background: marrone, border: `1px solid rgba(145,176,217,0.3)`,
+    color: celeste, fontSize: 18, cursor: 'pointer', padding: '12px 16px', lineHeight: 1,
   })
 
   return (
-    <div style={{ position: 'relative', height: 'calc(100vh - 180px)' }}>
+    <div style={{ position: 'relative', height: 'calc(100vh - 130px)', background: marrone, border: 'none', width: '100%' }}>
       <style>{`
         #tl-layout::-webkit-scrollbar { display: none }
         .timeline-img {
@@ -415,13 +462,14 @@ function TimelineLayout({ progetti, annoSelezionato, onSelectAnno }) {
         style={{
           height: '100%', overflowX: 'auto', overflowY: 'hidden',
           scrollbarWidth: 'none', display: 'flex', alignItems: 'stretch',
+          background: marrone,
         }}
       >
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'stretch' }}>
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'stretch', background: marrone }}>
           {/* Linea orizzontale */}
           <div style={{
             position: 'absolute', top: '50%', left: 0, right: 0, height: 1,
-            background: 'linear-gradient(to right, transparent, rgba(242,200,121,0.5) 5%, rgba(242,200,121,0.5) 95%, transparent)',
+            background: 'linear-gradient(to right, transparent, rgba(145,176,217,0.25) 5%, rgba(145,176,217,0.25) 95%, transparent)',
             pointerEvents: 'none', zIndex: 0, transform: 'translateY(-0.5px)',
           }} />
 
@@ -495,9 +543,9 @@ function BubbleMappa({ progetti, onSelectLocation, locationSelezionata }) {
       >
         <rect width={W} height={H} fill="#2F1F11" />
 
-        {countryPaths.map(c => (
-          <path key={c.id} d={c.d}
-            fill="#3D2A15" stroke="#F2C879" strokeWidth={0.3} strokeOpacity={0.4} />
+        {countryPaths.map((c, i) => (
+          <path key={c.id ?? i} d={c.d}
+            fill="#2F1F11" stroke="#91B0D9" strokeWidth={0.5} strokeOpacity={0.6} />
         ))}
 
         {locations.map(loc => {
@@ -512,11 +560,11 @@ function BubbleMappa({ progetti, onSelectLocation, locationSelezionata }) {
                onMouseEnter={() => setHovered(loc.nome)}
                onMouseLeave={() => setHovered(null)}>
               <circle cx={loc.x} cy={loc.y} r={rEff + 10}
-                fill="none" stroke="#F2C879" strokeWidth={0.5} strokeOpacity={0.25} />
+                fill="none" stroke="#91B0D9" strokeWidth={0.5} strokeOpacity={0.2} />
               <circle cx={loc.x} cy={loc.y} r={rEff}
-                fill={isSelected ? '#A64914' : '#F2C879'}
+                fill={isSelected ? '#A64914' : '#91B0D9'}
                 fillOpacity={isSelected || isHover ? 1 : 0.75}
-                stroke="#A64914" strokeWidth={1.5}
+                stroke="#91B0D9" strokeWidth={1.5}
                 style={{ transition: 'all 0.3s ease' }} />
               <text x={loc.x} y={loc.y + 1}
                 textAnchor="middle" dominantBaseline="middle"
@@ -525,7 +573,7 @@ function BubbleMappa({ progetti, onSelectLocation, locationSelezionata }) {
                 {loc.count}
               </text>
               <text x={loc.x} y={loc.y - rEff - 10}
-                textAnchor="middle" fill="#F2C879"
+                textAnchor="middle" fill="#91B0D9"
                 fontSize={8} fontFamily="Archivo" letterSpacing={2}
                 style={{ pointerEvents: 'none' }}>
                 {loc.nome}
@@ -584,14 +632,14 @@ export default function ProgettiPage({ filtroAttivo, onBack }) {
         background: marrone,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '20px 40px',
-        borderBottom: `1px solid rgba(242, 200, 121, 0.1)`,
+        borderBottom: `1px solid rgba(145,176,217,0.2)`,
       }}>
         <img src="/logo.png" alt="Archivio Mastrella" style={{ width: 140, filter: logoFilter }} />
         <button
           onClick={onBack}
           style={{
             fontFamily: archivo, fontSize: 9, fontWeight: 200,
-            letterSpacing: '0.3em', color: oro,
+            letterSpacing: '0.3em', color: celeste,
             background: 'none', border: 'none', cursor: 'pointer', padding: 0,
             opacity: 0.7,
           }}
@@ -606,7 +654,7 @@ export default function ProgettiPage({ filtroAttivo, onBack }) {
         background: marrone,
         padding: '20px 40px',
         display: 'flex', flexDirection: 'column', gap: 14,
-        borderBottom: `1px solid rgba(242, 200, 121, 0.1)`,
+        borderBottom: `1px solid rgba(145,176,217,0.2)`,
       }}>
         {/* Riga 1 — categorie */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 32, flexWrap: 'wrap' }}>
@@ -637,11 +685,13 @@ export default function ProgettiPage({ filtroAttivo, onBack }) {
 
       {/* ── Contenuto principale ── */}
       {tipoFiltro === 'anno' ? (
-        <TimelineLayout
-          progetti={progettiPerTimeline}
-          annoSelezionato={filtroSec}
-          onSelectAnno={(v) => setFiltroSec(prev => prev === v ? 'tutti' : v)}
-        />
+        <div style={{ background: marrone, width: '100%', minHeight: 'calc(100vh - 130px)', border: 'none' }}>
+          <TimelineLayout
+            progetti={progettiPerTimeline}
+            annoSelezionato={filtroSec}
+            onSelectAnno={(v) => setFiltroSec(prev => prev === v ? 'tutti' : v)}
+          />
+        </div>
       ) : tipoFiltro === 'luogo' ? (
         <>
           <BubbleMappa
@@ -657,7 +707,7 @@ export default function ProgettiPage({ filtroAttivo, onBack }) {
               padding: 2,
             }}>
               {progettiVisibili.map(p => (
-                <ProgettoCard key={p.id} progetto={p} />
+                <CardLuogo key={p.id} progetto={p} />
               ))}
             </div>
           )}
@@ -667,7 +717,7 @@ export default function ProgettiPage({ filtroAttivo, onBack }) {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           height: '40vh',
           fontFamily: archivo, fontSize: 11, fontWeight: 200,
-          letterSpacing: '0.3em', color: oro, opacity: 0.4,
+          letterSpacing: '0.3em', color: celeste, opacity: 0.4,
         }}>
           NESSUN PROGETTO TROVATO
         </div>
