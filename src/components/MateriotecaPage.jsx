@@ -1,5 +1,32 @@
+import { useState } from 'react'
+
 const archivo = "'Archivo', sans-serif"
 const marrone = '#2F1F11'
+const celeste = '#91B0D9'
+
+function BotoneIndietro({ onClick, color, colorBg, style }) {
+  const [hover, setHover] = useState(false)
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        fontFamily: archivo, fontSize: 12, fontWeight: 600,
+        letterSpacing: '0.3em',
+        color: hover ? colorBg : color,
+        background: hover ? color : 'transparent',
+        border: `1px solid ${color}`,
+        padding: '10px 20px',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        ...style,
+      }}
+    >
+      ← INDIETRO
+    </button>
+  )
+}
 
 export default function MateriotecaPage({ onBack }) {
   return (
@@ -17,17 +44,7 @@ export default function MateriotecaPage({ onBack }) {
           alt="Archivio Mastrella"
           style={{ width: 140 }}
         />
-        <button
-          onClick={onBack}
-          style={{
-            fontFamily: archivo, fontSize: 9, fontWeight: 200,
-            letterSpacing: '0.3em', color: marrone,
-            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-            opacity: 0.6, marginLeft: 'auto',
-          }}
-        >
-          ← INDIETRO
-        </button>
+        <BotoneIndietro onClick={onBack} color={marrone} colorBg={celeste} />
       </div>
 
       {/* ── Immagine fullscreen ── */}

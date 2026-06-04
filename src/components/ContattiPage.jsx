@@ -1,12 +1,14 @@
+import { useState } from 'react'
+
 const archivo = "'Archivo', sans-serif"
 const marrone = '#2F1F11'
-const oro = '#F2C879'
+const celeste = '#91B0D9'
 
 function TitoloSezione({ children, marginTop }) {
   return (
     <div style={{
-      fontFamily: archivo, fontSize: 10, fontWeight: 200,
-      letterSpacing: '0.4em', color: oro, opacity: 0.5,
+      fontFamily: archivo, fontSize: 10, fontWeight: 600,
+      color: celeste, opacity: 0.5,
       marginBottom: 24, marginTop: marginTop ?? 0,
       textTransform: 'uppercase',
     }}>
@@ -18,12 +20,36 @@ function TitoloSezione({ children, marginTop }) {
 function TestoContatto({ children }) {
   return (
     <div style={{
-      fontFamily: archivo, fontSize: 14, fontWeight: 200,
-      lineHeight: 2, color: oro,
-      textTransform: 'uppercase', letterSpacing: '0.05em',
+      fontFamily: archivo, fontSize: 14, fontWeight: 300,
+      lineHeight: 2, color: celeste,
+      textTransform: 'uppercase',
     }}>
       {children}
     </div>
+  )
+}
+
+function BotoneIndietro({ onClick, color, colorBg, style }) {
+  const [hover, setHover] = useState(false)
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        fontFamily: archivo, fontSize: 12, fontWeight: 600,
+        letterSpacing: '0.3em',
+        color: hover ? colorBg : color,
+        background: hover ? color : 'transparent',
+        border: `1px solid ${color}`,
+        padding: '10px 20px',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        ...style,
+      }}
+    >
+      ← INDIETRO
+    </button>
   )
 }
 
@@ -40,25 +66,15 @@ export default function ContattiPage({ onBack }) {
         background: marrone,
         display: 'flex', alignItems: 'center',
         padding: '20px 40px',
-        borderBottom: `1px solid rgba(242, 200, 121, 0.1)`,
+        borderBottom: `1px solid rgba(145, 176, 217, 0.1)`,
         boxSizing: 'border-box',
       }}>
         <img
           src="/logo.png"
           alt="Archivio Mastrella"
-          style={{ width: 140, filter: 'brightness(0) saturate(100%) invert(83%) sepia(30%) saturate(600%) hue-rotate(340deg) brightness(1.05)' }}
+          style={{ width: 140, filter: 'brightness(0) saturate(100%) invert(72%) sepia(23%) saturate(500%) hue-rotate(180deg)' }}
         />
-        <button
-          onClick={onBack}
-          style={{
-            fontFamily: archivo, fontSize: 9, fontWeight: 200,
-            letterSpacing: '0.3em', color: oro,
-            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-            opacity: 0.7, marginLeft: 'auto',
-          }}
-        >
-          ← INDIETRO
-        </button>
+        <BotoneIndietro onClick={onBack} color={celeste} colorBg={marrone} style={{ marginLeft: 'auto' }} />
       </div>
 
       {/* ── Contenuto ── */}
@@ -103,9 +119,9 @@ export default function ContattiPage({ onBack }) {
           <div>
             <TitoloSezione>Dati Fiscali</TitoloSezione>
             <div style={{
-              fontFamily: archivo, fontSize: 13, fontWeight: 200,
-              lineHeight: 2.2, color: oro,
-              textTransform: 'uppercase', letterSpacing: '0.05em',
+              fontFamily: archivo, fontSize: 13, fontWeight: 300,
+              lineHeight: 2.2, color: celeste,
+              textTransform: 'uppercase',
             }}>
               <div>STUDIO MASTRELLA S.N.C</div>
               <div>DI ROMANO MASTRELLA & C.</div>
@@ -124,11 +140,11 @@ export default function ContattiPage({ onBack }) {
         {/* Footer */}
         <div style={{ marginTop: 'auto', paddingTop: 64 }}>
           <div style={{
-            height: 1, background: oro, opacity: 0.2, marginBottom: 24,
+            height: 1, background: celeste, opacity: 0.2, marginBottom: 24,
           }} />
           <div style={{
-            fontFamily: archivo, fontSize: 9, fontWeight: 200,
-            letterSpacing: '0.3em', color: oro, opacity: 0.3,
+            fontFamily: archivo, fontSize: 9, fontWeight: 300,
+            color: celeste, opacity: 0.3,
             textTransform: 'uppercase',
           }}>
             © 2026 ARCHIVIO MASTRELLA — TUTTI I DIRITTI RISERVATI

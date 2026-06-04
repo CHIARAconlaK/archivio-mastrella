@@ -9,6 +9,7 @@ import ProgettiPage from './components/ProgettiPage'
 import StudioPage from './components/StudioPage'
 import ContattiPage from './components/ContattiPage'
 import MateriotecaPage from './components/MateriotecaPage'
+import CalendarioPage from './components/CalendarioPage'
 
 export default function App() {
   const [vista, setVista] = useState('landing')
@@ -23,6 +24,7 @@ export default function App() {
         onOpenStudio={() => setVista('studio')}
         onOpenMaterioteca={() => setVista('materioteca')}
         onOpenContatti={() => setVista('contatti')}
+        onOpenCalendario={() => setVista('calendario')}
       />
     )
   }
@@ -46,6 +48,10 @@ export default function App() {
 
   if (vista === 'contatti') {
     return <ContattiPage onBack={() => setVista('landing')} />
+  }
+
+  if (vista === 'calendario') {
+    return <CalendarioPage onBack={() => setVista('landing')} />
   }
 
   return (

@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 const archivo = "'Archivo', sans-serif"
 const marrone = '#2F1F11'
 const azzurro = '#91B0D9'
@@ -19,19 +21,43 @@ function TimelineVoce({ anno, testo }) {
       }} />
       <div>
         <div style={{
-          fontFamily: archivo, fontSize: 10, fontWeight: 200,
-          letterSpacing: '0.3em', color: oro, opacity: 0.5,
+          fontFamily: archivo, fontSize: 10, fontWeight: 300,
+          color: oro, opacity: 0.5,
         }}>
           {anno}
         </div>
         <div style={{
-          fontFamily: archivo, fontSize: 10, fontWeight: 200,
-          letterSpacing: '0.3em', color: oro, marginTop: 2,
+          fontFamily: archivo, fontSize: 10, fontWeight: 300,
+          color: oro, marginTop: 2,
         }}>
           {testo.toUpperCase()}
         </div>
       </div>
     </div>
+  )
+}
+
+function BotoneIndietro({ onClick, color, colorBg, style }) {
+  const [hover, setHover] = useState(false)
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        fontFamily: archivo, fontSize: 12, fontWeight: 600,
+        letterSpacing: '0.3em',
+        color: hover ? colorBg : color,
+        background: hover ? color : 'transparent',
+        border: `1px solid ${color}`,
+        padding: '10px 20px',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        ...style,
+      }}
+    >
+      ← INDIETRO
+    </button>
   )
 }
 
@@ -51,17 +77,7 @@ export default function StudioPage({ onBack }) {
         boxSizing: 'border-box',
       }}>
         <img src="/logo.png" alt="Archivio Mastrella" style={{ width: 140, filter: 'brightness(0) saturate(100%) invert(83%) sepia(30%) saturate(600%) hue-rotate(340deg) brightness(1.05)' }} />
-        <button
-          onClick={onBack}
-          style={{
-            fontFamily: archivo, fontSize: 9, fontWeight: 200,
-            letterSpacing: '0.3em', color: oro,
-            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-            opacity: 0.6,
-          }}
-        >
-          ← INDIETRO
-        </button>
+        <BotoneIndietro onClick={onBack} color={oro} colorBg={marrone} />
       </div>
 
       {/* ── Sezione Video ── */}
@@ -90,14 +106,14 @@ export default function StudioPage({ onBack }) {
 
         <div style={{ position: 'absolute', bottom: 80, left: 64 }}>
           <div style={{
-            fontFamily: archivo, fontSize: 11, fontWeight: 200,
-            letterSpacing: '0.5em', color: oro, opacity: 0.7, marginBottom: 16,
+            fontFamily: archivo, fontSize: 11, fontWeight: 300,
+            color: oro, opacity: 0.7, marginBottom: 16,
           }}>
             ARCHIVIO MASTRELLA
           </div>
           <div style={{
-            fontFamily: archivo, fontSize: 72, fontWeight: 100,
-            letterSpacing: '0.05em', color: oro, lineHeight: 1,
+            fontFamily: archivo, fontSize: 72, fontWeight: 600,
+            color: oro, lineHeight: 1,
           }}>
             1985 — OGGI
           </div>
@@ -133,8 +149,8 @@ export default function StudioPage({ onBack }) {
           boxSizing: 'border-box',
         }}>
           <div style={{
-            fontFamily: archivo, fontSize: 10, fontWeight: 200,
-            letterSpacing: '0.5em', color: marrone, opacity: 0.5,
+            fontFamily: archivo, fontSize: 10, fontWeight: 600,
+            color: marrone, opacity: 0.5,
             marginBottom: 48,
           }}>
             CHI SIAMO
@@ -160,8 +176,8 @@ export default function StudioPage({ onBack }) {
         boxSizing: 'border-box',
       }}>
         <div style={{
-          fontFamily: archivo, fontSize: 10, fontWeight: 200,
-          letterSpacing: '0.5em', color: oro, opacity: 0.5,
+          fontFamily: archivo, fontSize: 10, fontWeight: 600,
+          color: oro, opacity: 0.5,
           marginBottom: 64,
         }}>
           LA NOSTRA STORIA
@@ -209,7 +225,7 @@ export default function StudioPage({ onBack }) {
         {/* Anno di sfondo */}
         <div style={{
           position: 'absolute',
-          fontFamily: archivo, fontSize: 180, fontWeight: 100,
+          fontFamily: archivo, fontSize: 180, fontWeight: 300,
           color: marrone, opacity: 0.15,
           userSelect: 'none', lineHeight: 1,
           pointerEvents: 'none',
@@ -218,8 +234,8 @@ export default function StudioPage({ onBack }) {
         </div>
 
         <div style={{
-          fontFamily: archivo, fontSize: 10, fontWeight: 200,
-          letterSpacing: '0.5em', color: marrone, opacity: 0.5,
+          fontFamily: archivo, fontSize: 10, fontWeight: 600,
+          color: marrone, opacity: 0.5,
           marginBottom: 48, position: 'relative',
         }}>
           STUDIO MASTRELLA
@@ -239,8 +255,8 @@ export default function StudioPage({ onBack }) {
 
         <div style={{
           marginTop: 72, position: 'relative',
-          fontFamily: archivo, fontSize: 11, fontWeight: 200,
-          letterSpacing: '0.4em', color: marrone,
+          fontFamily: archivo, fontSize: 11, fontWeight: 300,
+          color: marrone,
         }}>
           40 ANNI · 4 DISCIPLINE · WORLDWIDE
         </div>

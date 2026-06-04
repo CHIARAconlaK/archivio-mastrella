@@ -28,8 +28,7 @@ export default function UI({ filtroAttivo = 'TUTTI', onFiltro, onIndietro }) {
           style={{
             fontFamily: archivo,
             fontSize: 9,
-            fontWeight: 200,
-            letterSpacing: '0.3em',
+            fontWeight: 300,
             color: oro,
             background: 'none',
             border: 'none',
@@ -59,8 +58,7 @@ export default function UI({ filtroAttivo = 'TUTTI', onFiltro, onIndietro }) {
             style={{
               fontFamily: archivo,
               fontSize: 9,
-              fontWeight: 200,
-              letterSpacing: '0.3em',
+              fontWeight: 600,
               color: oro,
               background: 'none',
               cursor: 'pointer',
@@ -82,8 +80,7 @@ export default function UI({ filtroAttivo = 'TUTTI', onFiltro, onIndietro }) {
         left: 32,
         fontFamily: archivo,
         fontSize: 9,
-        fontWeight: 200,
-        letterSpacing: '0.15em',
+        fontWeight: 300,
         color: oro,
         opacity: 0.5,
       }}>
@@ -97,8 +94,7 @@ export default function UI({ filtroAttivo = 'TUTTI', onFiltro, onIndietro }) {
         right: 32,
         fontFamily: archivo,
         fontSize: 9,
-        fontWeight: 200,
-        letterSpacing: '0.15em',
+        fontWeight: 300,
         color: oro,
         opacity: 0.3,
       }}>

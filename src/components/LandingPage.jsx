@@ -62,7 +62,7 @@ const progetti = [
 
 const N = progetti.length
 
-const MENU = ['LO STUDIO', 'PROGETTI', 'MATERIOTECA', 'COLLABORATORI', 'CALENDARIO', 'CONTATTI']
+const MENU = ['MATERIOTECA', 'ARCHIVIO', 'COLLABORATORI', 'LO STUDIO', 'CONTATTI', 'CALENDARIO']
 const LINGUE = ['ITA', 'ENG', 'عربي']
 const archivo = "'Archivo', sans-serif"
 const marrone = '#2F1F11'
@@ -83,8 +83,8 @@ function DropdownVoce({ label, onSelect }) {
       onMouseLeave={() => setHover(false)}
       style={{
         fontFamily: "'Archivo', sans-serif", fontSize: 10,
-        fontWeight: hover ? 400 : 300,
-        letterSpacing: '0.35em', color: '#F2C879',
+        fontWeight: 600,
+        color: '#91B0D9',
         textTransform: 'uppercase',
         background: 'none', border: 'none', cursor: 'pointer',
         padding: 0, textAlign: 'left',
@@ -97,7 +97,7 @@ function DropdownVoce({ label, onSelect }) {
   )
 }
 
-export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onOpenMaterioteca, onOpenContatti }) {
+export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onOpenMaterioteca, onOpenContatti, onOpenCalendario }) {
   const colonnaSxRef = useRef()
   const colonnaDxRef = useRef()
   const cardRef = useRef()
@@ -247,7 +247,7 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
 
         <nav style={{ display: 'flex', alignItems: 'center', gap: 40 }}>
           {MENU.filter(v => v !== 'CALENDARIO').map((voce) => {
-            if (voce === 'PROGETTI') {
+            if (voce === 'ARCHIVIO') {
               return (
                 <div key={voce} ref={dropdownRef} style={{ position: 'relative' }}>
                   <button
@@ -255,15 +255,15 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
                     onMouseEnter={() => setHoverVoce(voce)}
                     onMouseLeave={() => setHoverVoce(null)}
                     style={{
-                      fontFamily: archivo, fontSize: 11, fontWeight: 400,
-                      letterSpacing: '0.25em', color: marrone,
+                      fontFamily: archivo, fontSize: 11, fontWeight: 600,
+                      color: marrone,
                       background: 'none', border: 'none', cursor: 'pointer', padding: 0,
                       borderBottom: hoverVoce === voce ? `0.5px solid ${marrone}` : '0.5px solid transparent',
                       transition: 'border-color 0.2s ease',
                       display: 'flex', alignItems: 'center', gap: 5,
                     }}
                   >
-                    PROGETTI
+                    ARCHIVIO
                     <span style={{ fontSize: 8, lineHeight: 1 }}>
                       {dropdownAperto ? '▴' : '▾'}
                     </span>
@@ -278,7 +278,7 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
                       minWidth: 220,
                       zIndex: 300,
                     }}>
-                      {['ANNO', 'LUOGO', 'MATERIALE', 'STATO DI REALIZZAZIONE', 'TIPOLOGIA'].map((filtro) => (
+                      {['MATERIALE', 'ANNO', 'LUOGO', 'TIPOLOGIA'].map((filtro) => (
                         <DropdownVoce
                           key={filtro}
                           label={filtro}
@@ -297,8 +297,8 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
                 onMouseEnter={() => setHoverVoce(voce)}
                 onMouseLeave={() => setHoverVoce(null)}
                 style={{
-                  fontFamily: archivo, fontSize: 11, fontWeight: 400,
-                  letterSpacing: '0.25em', color: marrone,
+                  fontFamily: archivo, fontSize: 11, fontWeight: 600,
+                  color: marrone,
                   background: 'none', border: 'none', cursor: 'pointer', padding: 0,
                   borderBottom: hoverVoce === voce ? `0.5px solid ${marrone}` : '0.5px solid transparent',
                   transition: 'border-color 0.2s ease',
@@ -311,12 +311,11 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
 
           {/* CALENDARIO — voce distinta */}
           <button
-            onClick={onEnter}
+            onClick={onOpenCalendario}
             onMouseEnter={() => setHoverCalendario(true)}
             onMouseLeave={() => setHoverCalendario(false)}
             style={{
-              fontFamily: archivo, fontSize: 11, fontWeight: 400,
-              letterSpacing: '0.25em',
+              fontFamily: archivo, fontSize: 11, fontWeight: 600,
               color: hoverCalendario ? '#91B0D9' : marrone,
               background: hoverCalendario ? marrone : 'transparent',
               border: `1.5px solid ${marrone}`,
@@ -383,8 +382,8 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
           <div
             ref={nomeRef}
             style={{
-              fontFamily: archivo, fontSize: 18, fontWeight: 200,
-              letterSpacing: '0.5em', color: p0.accent,
+              fontFamily: archivo, fontSize: 18, fontWeight: 600,
+              color: p0.accent,
             }}
           >
             {p0.nome}
@@ -392,8 +391,8 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
           <div
             ref={materialeRef}
             style={{
-              fontFamily: archivo, fontSize: 13,
-              letterSpacing: '0.3em', color: p0.accent, marginTop: 5,
+              fontFamily: archivo, fontSize: 13, fontWeight: 300,
+              color: p0.accent, marginTop: 5,
             }}
           >
             {p0.materiale}
@@ -438,16 +437,14 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
             <div style={{
               fontFamily: archivo,
               fontSize: 'clamp(28px, 3.5vw, 48px)',
-              fontWeight: 100,
-              letterSpacing: '0.1em',
+              fontWeight: 600,
               color: progetti[currentIndex].accent,
               lineHeight: 1.1,
             }}>
               {progetti[currentIndex].nome}
             </div>
             <div style={{
-              fontFamily: archivo, fontSize: 11, fontWeight: 200,
-              letterSpacing: '0.3em',
+              fontFamily: archivo, fontSize: 11, fontWeight: 300,
               color: progetti[currentIndex].accent,
               opacity: 0.6,
               marginTop: 16,
@@ -462,8 +459,7 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
             <button
               onClick={handleChiudi}
               style={{
-                fontFamily: archivo, fontSize: 9, fontWeight: 200,
-                letterSpacing: '0.3em',
+                fontFamily: archivo, fontSize: 9, fontWeight: 300,
                 color: progetti[currentIndex].accent,
                 background: 'none', border: 'none', cursor: 'pointer', padding: 0,
                 opacity: 0.7,
@@ -515,42 +511,42 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
               <div>
                 <img src={imgMateriale} alt="" style={{
                   width: 220, height: 220, objectFit: 'cover', display: 'block',
-                  border: `1px solid ${hexToRgba(p.accent, 0.4)}`,
+                  border: `1px solid ${hexToRgba(marrone, 0.4)}`,
                 }} />
                 <div style={{
-                  fontFamily: archivo, fontSize: 9, fontWeight: 200,
-                  letterSpacing: '0.4em', color: p.accent, opacity: 0.5, marginTop: 12,
+                  fontFamily: archivo, fontSize: 14, fontWeight: 300,
+                  color: marrone, marginTop: 12,
                 }}>MATERIALE</div>
               </div>
 
               {/* Basso: testi + chiudi */}
               <div>
                 <div style={{
-                  fontFamily: archivo, fontSize: 52, fontWeight: 100,
-                  letterSpacing: '0.05em', lineHeight: 1, color: p.accent,
+                  fontFamily: archivo, fontSize: 52, fontWeight: 600,
+                  lineHeight: 1, color: marrone,
                 }}>{p.nome}</div>
                 <div style={{
-                  fontFamily: archivo, fontSize: 11, fontWeight: 200,
-                  letterSpacing: '0.3em', color: p.accent, opacity: 0.6,
+                  fontFamily: archivo, fontSize: 14, fontWeight: 300,
+                  color: marrone,
                   marginTop: 16, textTransform: 'uppercase',
                 }}>{p.materiale}</div>
                 <div style={{
-                  fontFamily: archivo, fontSize: 11, fontWeight: 200,
-                  letterSpacing: '0.3em', color: p.accent, opacity: 0.4, marginTop: 8,
+                  fontFamily: archivo, fontSize: 14, fontWeight: 300,
+                  color: marrone, marginTop: 8,
                 }}>{p.anno}</div>
                 {p.luogo ? (
                   <div style={{
-                    fontFamily: archivo, fontSize: 11, fontWeight: 200,
-                    letterSpacing: '0.3em', color: p.accent, opacity: 0.4, marginTop: 8,
+                    fontFamily: archivo, fontSize: 14, fontWeight: 300,
+                    color: marrone, marginTop: 8,
                   }}>{p.luogo}</div>
                 ) : null}
                 <button
                   onClick={chiudiCard}
                   style={{
-                    marginTop: 32, fontFamily: archivo, fontSize: 9, fontWeight: 300,
-                    letterSpacing: '0.4em', color: p.accent,
-                    background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-                    borderBottom: `1px solid ${p.accent}`, paddingBottom: 4,
+                    marginTop: 32, fontFamily: archivo, fontSize: 11, fontWeight: 600,
+                    color: marrone,
+                    background: 'none', border: `1px solid ${marrone}`, cursor: 'pointer',
+                    padding: '10px 24px',
                   }}
                 >← CHIUDI</button>
               </div>
@@ -575,8 +571,8 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
               style={{
                 fontFamily: archivo,
                 fontSize: isArabo ? 13 : 11,
-                fontWeight: 400,
-                letterSpacing: '0.2em', color: marrone,
+                fontWeight: 600,
+                color: marrone,
                 background: 'none', border: 'none', cursor: 'pointer', padding: 0,
                 borderBottom: isAttiva ? `1px solid ${marrone}` : '1px solid transparent',
                 paddingBottom: 1,
