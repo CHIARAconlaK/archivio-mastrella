@@ -1,18 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 
 const archivo = "'Archivo', sans-serif"
 const marrone = '#2F1F11'
-
-const TRANSFORMS = [
-  { rotateY: 0,   rotateX: 0, translateZ: 0,    translateX: 0,   translateY: 0,    opacity: 1    },
-  { rotateY: -4,  rotateX: 1, translateZ: -40,   translateX: 40,  translateY: -15,  opacity: 0.98 },
-  { rotateY: -8,  rotateX: 3, translateZ: -100,  translateX: 100, translateY: -40,  opacity: 0.95 },
-  { rotateY: -12, rotateX: 4, translateZ: -180,  translateX: 180, translateY: -80,  opacity: 0.9  },
-  { rotateY: -16, rotateX: 5, translateZ: -280,  translateX: 280, translateY: -120, opacity: 0.85 },
-  { rotateY: -19, rotateX: 6, translateZ: -420,  translateX: 420, translateY: -180, opacity: 0.8  },
-  { rotateY: -22, rotateX: 7, translateZ: -560,  translateX: 560, translateY: -240, opacity: 0.7  },
-  { rotateY: -25, rotateX: 8, translateZ: -700,  translateX: 700, translateY: -300, opacity: 0.6  },
-]
 
 const LOGO_FILTERS = {
   '#F2C879': 'brightness(0) saturate(100%) invert(83%) sepia(30%) saturate(600%) hue-rotate(340deg) brightness(1.05)',
@@ -40,10 +29,6 @@ const FILTRI = [
   { label: 'OPEN DAY', count: 1 },
 ]
 
-function buildTransform(t, hover = false) {
-  const base = `rotateY(${t.rotateY}deg) rotateX(${t.rotateX}deg) translateZ(${t.translateZ}px) translateX(${t.translateX}px) translateY(${t.translateY}px)`
-  return hover ? `${base} scale(1.02)` : base
-}
 
 function BotoneIndietro({ onClick }) {
   const [hover, setHover] = useState(false)
@@ -68,15 +53,128 @@ function BotoneIndietro({ onClick }) {
   )
 }
 
-export default function CalendarioPage({ onBack }) {
-  const [stack, setStack] = useState([0, 1, 2, 3, 4, 5, 6, 7])
-  const [hoverFront, setHoverFront] = useState(false)
-  const [filtro, setFiltro] = useState('TUTTI')
+function PosterContent({ poster, size }) {
+  const isLarge = size === 'large'
+  return (
+    <>
+      <img
+        src="/logo.png"
+        alt=""
+        style={{ width: isLarge ? 100 : 60, filter: LOGO_FILTERS[poster.testo] || 'brightness(0)' }}
+      />
+      <div style={{
+        fontFamily: archivo,
+        fontSize: isLarge ? 56 : 30,
+        fontWeight: 100,
+        letterSpacing: '0.02em',
+        lineHeight: 1,
+        color: poster.testo,
+        whiteSpace: 'pre-line',
+      }}>
+        {poster.titolo}
+      </div>
+      <div>
+        <div style={{
+          fontFamily: archivo, fontSize: isLarge ? 13 : 9, fontWeight: 300,
+          color: poster.testo, marginBottom: 6,
+        }}>
+          {poster.data} · {poster.luogo}
+        </div>
+        <div style={{
+          fontFamily: archivo, fontSize: isLarge ? 10 : 8, fontWeight: 200,
+          letterSpacing: '0.3em', color: poster.testo, opacity: 0.6,
+          textTransform: 'uppercase',
+        }}>
+          {poster.tipo}
+        </div>
+      </div>
+    </>
+  )
+}
 
-  const handleClickFront = () => {
-    setHoverFront(false)
-    setStack(prev => [...prev.slice(1), prev[0]])
-  }
+function OverlayPoster({ poster, onClose }) {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setVisible(true))
+    return () => cancelAnimationFrame(id)
+  }, [])
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 500,
+        background: 'rgba(0,0,0,0.85)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          position: 'relative',
+          width: 420, height: 560,
+          background: poster.bg,
+          borderRadius: 2,
+          padding: '36px 32px',
+          boxSizing: 'border-box',
+          display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+          transform: visible ? 'scale(1)' : 'scale(0.8)',
+          opacity: visible ? 1 : 0,
+          transition: 'transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s cubic-bezier(0.16,1,0.3,1)',
+        }}
+      >
+        <button
+          onClick={onClose}
+          style={{
+            position: 'absolute', top: 16, right: 16,
+            background: 'none', border: 'none',
+            fontSize: 20, cursor: 'pointer',
+            color: poster.testo, lineHeight: 1, padding: 4,
+          }}
+        >
+          ✕
+        </button>
+        <PosterContent poster={poster} size="large" />
+      </div>
+    </div>
+  )
+}
+
+export default function CalendarioPage({ onBack }) {
+  const [hoveredIndex, setHoveredIndex] = useState(null)
+  const [posterAperto, setPosterAperto] = useState(null)
+  const [filtro, setFiltro] = useState('TUTTI')
+  const [scrollIndex, setScrollIndex] = useState(0)
+  const scrollAccumulator = useRef(0)
+  const isScrolling = useRef(false)
+
+  const handleWheel = useCallback((e) => {
+    e.preventDefault()
+    scrollAccumulator.current += e.deltaY
+    const steps = Math.floor(Math.abs(scrollAccumulator.current) / 200)
+    if (steps > 0) {
+      if (isScrolling.current) return
+      isScrolling.current = true
+      setTimeout(() => { isScrolling.current = false }, 500)
+      const direction = scrollAccumulator.current > 0 ? 1 : -1
+      scrollAccumulator.current -= steps * 200 * direction
+      setScrollIndex(prev => {
+        const next = prev + (steps * direction)
+        return ((next % 8) + 8) % 8
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('wheel', handleWheel, { passive: false })
+    return () => window.removeEventListener('wheel', handleWheel)
+  }, [handleWheel])
+
+  const posterOrdinati = [
+    ...POSTERS.slice(scrollIndex),
+    ...POSTERS.slice(0, scrollIndex),
+  ]
 
   return (
     <div style={{
@@ -93,87 +191,56 @@ export default function CalendarioPage({ onBack }) {
         background: 'transparent',
         boxSizing: 'border-box',
       }}>
-        <img src="/logo.png" alt="Archivio Mastrella" style={{ width: 160, filter: 'brightness(0)' }} />
+        <img src="/logo.png" alt="Archivio Mastrella" style={{ width: 160 }} />
         <BotoneIndietro onClick={onBack} />
       </div>
 
       {/* ── Stack 3D ── */}
       <div style={{
         position: 'absolute',
-        left: '15%',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        perspective: '1200px',
+        left: '50%',
+        top: '42%',
+        transform: 'translateX(calc(-50% - 280px)) translateY(calc(-50% + 227px))',
+        perspective: '1800px',
         transformStyle: 'preserve-3d',
-        width: 320,
-        height: 420,
+        width: 260,
+        height: 340,
       }}>
-        {stack.map((posterIdx, stackPos) => {
-          const t = TRANSFORMS[stackPos]
-          const poster = POSTERS[posterIdx]
-          const isFront = stackPos === 0
+        {posterOrdinati.map((poster, stackPos) => {
+          const isHovered = hoveredIndex === stackPos
+          const tx = stackPos * 80
+          const ty = stackPos * -65
+          const tz = stackPos * -80
+          const baseTransform = `translateX(${tx}px) translateY(${ty}px) translateZ(${tz}px) rotateY(-20deg) rotateX(6deg)`
+          const transform = isHovered ? `${baseTransform} scale(1.08)` : baseTransform
 
           return (
             <div
-              key={posterIdx}
-              onClick={isFront ? handleClickFront : undefined}
-              onMouseEnter={isFront ? () => setHoverFront(true) : undefined}
-              onMouseLeave={isFront ? () => setHoverFront(false) : undefined}
+              key={poster.titolo}
+              onClick={() => setPosterAperto(poster)}
+              onMouseEnter={() => setHoveredIndex(stackPos)}
+              onMouseLeave={() => setHoveredIndex(null)}
               style={{
                 position: 'absolute',
-                width: 320, height: 420,
+                transformStyle: 'preserve-3d',
+                width: 260, height: 340,
                 background: poster.bg,
                 borderRadius: 2,
                 overflow: 'hidden',
-                cursor: isFront ? 'pointer' : 'default',
-                transition: 'transform 0.6s ease, opacity 0.6s ease, box-shadow 0.3s ease',
-                transform: buildTransform(t, isFront && hoverFront),
-                opacity: t.opacity,
-                boxShadow: isFront && hoverFront
-                  ? '8px 12px 40px rgba(0,0,0,0.4)'
+                cursor: 'pointer',
+                transition: 'all 0.4s cubic-bezier(0.25,0.46,0.45,0.94)',
+                transform,
+                opacity: 1,
+                boxShadow: isHovered
+                  ? '12px 12px 40px rgba(0,0,0,0.5)'
                   : '4px 6px 20px rgba(0,0,0,0.25)',
-                zIndex: 8 - stackPos,
-                padding: '28px 24px',
+                zIndex: isHovered ? 100 : 8 - stackPos,
+                padding: '20px 16px',
                 boxSizing: 'border-box',
                 display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
               }}
             >
-              {/* Logo */}
-              <img
-                src="/logo.png"
-                alt=""
-                style={{ width: 80, filter: LOGO_FILTERS[poster.testo] || 'brightness(0)' }}
-              />
-
-              {/* Titolo evento */}
-              <div style={{
-                fontFamily: archivo,
-                fontSize: 48,
-                fontWeight: 100,
-                letterSpacing: '0.02em',
-                lineHeight: 1,
-                color: poster.testo,
-                whiteSpace: 'pre-line',
-              }}>
-                {poster.titolo}
-              </div>
-
-              {/* Data, luogo e tipo */}
-              <div>
-                <div style={{
-                  fontFamily: archivo, fontSize: 11, fontWeight: 300,
-                  color: poster.testo, marginBottom: 8,
-                }}>
-                  {poster.data} · {poster.luogo}
-                </div>
-                <div style={{
-                  fontFamily: archivo, fontSize: 9, fontWeight: 200,
-                  letterSpacing: '0.3em', color: poster.testo, opacity: 0.6,
-                  textTransform: 'uppercase',
-                }}>
-                  {poster.tipo}
-                </div>
-              </div>
+              <PosterContent poster={poster} size="small" />
             </div>
           )
         })}
@@ -224,6 +291,14 @@ export default function CalendarioPage({ onBack }) {
           )
         })}
       </div>
+
+      {/* ── Overlay poster aperto ── */}
+      {posterAperto !== null && (
+        <OverlayPoster
+          poster={posterAperto}
+          onClose={() => setPosterAperto(null)}
+        />
+      )}
 
     </div>
   )
