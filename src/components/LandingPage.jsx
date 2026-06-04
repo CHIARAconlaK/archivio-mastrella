@@ -3,57 +3,57 @@ import gsap from 'gsap'
 
 const progetti = [
   {
-    nome: 'VILLA CEMENTO',
-    materiale: 'Cemento armato a vista',
+    nome: 'STUDIO MASTRELLA',
+    materiale: 'mattoni a vista', luogo: 'Anzio, Italia', anno: '2013',
     cardBg: '#91B0D9', accent: '#2F1F11', logoFilter: 'none',
     imgSinistra: '/immagini/progetto1-materiale.png',
     imgDestra: '/immagini/progetto1-edificio.png',
   },
   {
-    nome: 'RESIDENZA PIETRA',
-    materiale: 'Pietra naturale locale',
+    nome: 'UFFICIO AZIENDALE',
+    materiale: 'marmo bardiglio nuvolato', luogo: 'SURAT, INDIA', anno: '2021',
     cardBg: '#F2C879', accent: '#2F1F11', logoFilter: 'none',
     imgSinistra: '/immagini/progetto2-edificio.png',
     imgDestra: '/immagini/progetto2-materiale.png',
   },
   {
-    nome: 'CASA DEL LINO',
-    materiale: 'Lino e materiali naturali',
+    nome: 'VILLA A PALM JUMEIRAH',
+    materiale: 'travertino romano', luogo: 'Palm Jumeirah, Dubai', anno: '2019',
     cardBg: '#2F1F11', accent: '#91B0D9', logoFilter: 'brightness(0) saturate(100%) invert(72%) sepia(23%) saturate(800%) hue-rotate(180deg)',
     imgSinistra: '/immagini/progetto3-materiale.png',
     imgDestra: '/immagini/progetto3-edificio.png',
   },
   {
-    nome: 'STUDIO OTTONE',
-    materiale: 'Ottone e vetro',
+    nome: 'VILLA A PALM JUMEIRAH',
+    materiale: 'cemento armato a vista', luogo: 'Palm Jumeirah, Dubai', anno: '2022',
     cardBg: '#A64914', accent: '#F2C879', logoFilter: 'brightness(0) saturate(100%) invert(83%) sepia(30%) saturate(600%) hue-rotate(340deg) brightness(1.05)',
     imgSinistra: '/immagini/progetto4-edificio.png',
     imgDestra: '/immagini/progetto4-materiale.png',
   },
   {
-    nome: 'TORRE TRAVERTINO',
-    materiale: 'Travertino romano',
+    nome: 'VILLA A PALM JUMEIRAH',
+    materiale: 'teak burma', luogo: 'Palm Jumeirah, Dubai', anno: '2022',
     cardBg: '#F2C879', accent: '#2F1F11', logoFilter: 'none',
     imgSinistra: '/immagini/progetto5-materiale.png',
     imgDestra: '/immagini/progetto5-edificio.png',
   },
   {
-    nome: 'PADIGLIONE LEGNO',
-    materiale: 'Legno massello di rovere',
+    nome: 'VILLA IN ANZIO',
+    materiale: 'mattoni faccia a vista', luogo: 'Anzio, Roma, Italia', anno: '2000',
     cardBg: '#2F1F11', accent: '#91B0D9', logoFilter: 'brightness(0) saturate(100%) invert(72%) sepia(23%) saturate(800%) hue-rotate(180deg)',
     imgSinistra: '/immagini/progetto6-edificio.png',
     imgDestra: '/immagini/progetto6-materiale.png',
   },
   {
     nome: 'CORTE CORTEN',
-    materiale: 'Acciaio corten ossidato',
+    materiale: 'Acciaio corten ossidato', luogo: '', anno: '2021',
     cardBg: '#A64914', accent: '#F2C879', logoFilter: 'brightness(0) saturate(100%) invert(83%) sepia(30%) saturate(600%) hue-rotate(340deg) brightness(1.05)',
     imgSinistra: '/immagini/progetto7-materiale.png',
     imgDestra: '/immagini/progetto7-edificio.png',
   },
   {
     nome: 'CASA MARMO',
-    materiale: 'Marmo di Carrara',
+    materiale: 'Marmo di Carrara', luogo: '', anno: '2024',
     cardBg: '#91B0D9', accent: '#2F1F11', logoFilter: 'none',
     imgSinistra: '/immagini/progetto8-edificio.png',
     imgDestra: '/immagini/progetto8-materiale.png',
@@ -66,6 +66,13 @@ const MENU = ['LO STUDIO', 'PROGETTI', 'MATERIOTECA', 'COLLABORATORI', 'CALENDAR
 const LINGUE = ['ITA', 'ENG', 'عربي']
 const archivo = "'Archivo', sans-serif"
 const marrone = '#2F1F11'
+
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  return `rgba(${r},${g},${b},${alpha})`
+}
 
 function DropdownVoce({ label, onSelect }) {
   const [hover, setHover] = useState(false)
@@ -90,7 +97,7 @@ function DropdownVoce({ label, onSelect }) {
   )
 }
 
-export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onOpenContatti }) {
+export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onOpenMaterioteca, onOpenContatti }) {
   const colonnaSxRef = useRef()
   const colonnaDxRef = useRef()
   const cardRef = useRef()
@@ -109,19 +116,15 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
   const contenutoEditorialeRef = useRef()
   const immagineMaterialeRef = useRef()
   const [editoriale, setEditoriale] = useState(false)
-  const containerSxRef = useRef()
-  const containerDxRef = useRef()
-  const overlayImgRef = useRef()
-  const immagineModeRef = useRef(false)
-  const colonnaClickataRef = useRef(null)
-  const [immagineMode, setImmagineMode] = useState(false)
+  const [cardAperta, setCardAperta] = useState(false)
+  const [cardVisible, setCardVisible] = useState(false)
+  const cardApertaRef = useRef(false)
 
   useLayoutEffect(() => {
     gsap.set(colonnaDxRef.current, { y: -(N - 1) * window.innerHeight })
     gsap.set(pannelloRef.current, { scaleX: 0, transformOrigin: 'left center' })
     gsap.set(contenutoEditorialeRef.current, { opacity: 0 })
     gsap.set(immagineMaterialeRef.current, { opacity: 0, scale: 1.2 })
-    gsap.set(overlayImgRef.current, { opacity: 0 })
   }, [])
 
   // Animazioni GSAP al cambio di progetto (salta il mount iniziale)
@@ -145,9 +148,16 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
   }, [currentIndex])
 
   useEffect(() => { editorialeRef.current = editoriale }, [editoriale])
+  useEffect(() => { cardApertaRef.current = cardAperta }, [cardAperta])
 
-  const handleCardClick = () => {
-    handleImmagineClick()
+  const apriCard = () => {
+    setCardAperta(true)
+    setTimeout(() => setCardVisible(true), 10)
+  }
+
+  const chiudiCard = () => {
+    setCardVisible(false)
+    setTimeout(() => setCardAperta(false), 400)
   }
 
   const handleChiudi = () => {
@@ -164,68 +174,12 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
     })
   }
 
-  const handleImmagineClick = () => {
-    if (immagineModeRef.current || editorialeRef.current) return
-    immagineModeRef.current = true
-    setImmagineMode(true)
-
-    // Indice PARI  → sinistra=materiale, destra=edificio
-    // Indice DISPARI → sinistra=edificio, destra=materiale
-    const edificioIsLeft = currentIndex % 2 !== 0
-    colonnaClickataRef.current = edificioIsLeft ? 'sx' : 'dx'
-
-    const vw = window.innerWidth
-    const vh = window.innerHeight
-    const cEdificio = edificioIsLeft ? containerSxRef.current : containerDxRef.current
-    const cMateriale = edificioIsLeft ? containerDxRef.current : containerSxRef.current
-    const p = progetti[currentIndex]
-
-    // Normalizza entrambe a left-based prima di animare
-    gsap.set(cEdificio, { left: edificioIsLeft ? 0 : vw / 2, right: 'auto', top: 0, width: vw / 2, height: vh })
-    gsap.set(cMateriale, { left: edificioIsLeft ? vw / 2 : 0, right: 'auto', top: 0, width: vw / 2, height: vh, zIndex: 'auto' })
-    gsap.set(cMateriale, { padding: 8, boxSizing: 'border-box', backgroundColor: p.cardBg, outline: `1px solid ${p.cardBg}` })
-
-    const tl = gsap.timeline()
-    tl.to(cardRef.current, { opacity: 0, scale: 0.95, duration: 0.2, ease: 'power2.in' })
-    tl.to(cEdificio, { left: 0, width: vw, duration: 0.7, ease: 'power2.inOut' }, '<')
-    tl.to(cMateriale, {
-      left: 48, top: vh - 280 - 48,
-      width: 280, height: 280, zIndex: 50,
-      duration: 0.7, ease: 'power2.inOut',
-    }, '<')
-    tl.fromTo(overlayImgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, '-=0.2')
-  }
-
-  const handleChiudiImmagine = () => {
-    const isLeft = colonnaClickataRef.current === 'sx'
-    const vw = window.innerWidth
-    const vh = window.innerHeight
-    const cEdificio = isLeft ? containerSxRef.current : containerDxRef.current
-    const cMateriale = isLeft ? containerDxRef.current : containerSxRef.current
-
-    const tl = gsap.timeline({
-      onComplete: () => {
-        gsap.set([containerSxRef.current, containerDxRef.current], { clearProps: 'all' })
-        gsap.to(cardRef.current, { opacity: 1, scale: 1, duration: 0.3, ease: 'power2.out' })
-        setImmagineMode(false)
-        immagineModeRef.current = false
-      },
-    })
-    tl.to(overlayImgRef.current, { opacity: 0, duration: 0.25 })
-    tl.to(cMateriale, {
-      left: isLeft ? vw / 2 : 0, top: 0,
-      width: vw / 2, height: vh, zIndex: 0,
-      duration: 0.6, ease: 'power2.inOut',
-    })
-    tl.to(cEdificio, { left: isLeft ? 0 : vw / 2, width: vw / 2, duration: 0.6, ease: 'power2.inOut' }, '<')
-  }
-
   // Listener wheel e touch
   const isScrolling = useRef(false)
 
   const handleWheel = useCallback((e) => {
     e.preventDefault()
-    if (isScrolling.current || editorialeRef.current || immagineModeRef.current) return
+    if (isScrolling.current || editorialeRef.current || cardApertaRef.current) return
     isScrolling.current = true
     if (e.deltaY > 0) {
       setCurrentIndex(prev => Math.min(prev + 1, progetti.length - 1))
@@ -245,7 +199,7 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
     const handleTouchStart = (e) => { touchStartY = e.touches[0].clientY }
     const handleTouchEnd = (e) => {
       const delta = touchStartY - e.changedTouches[0].clientY
-      if (Math.abs(delta) > 40 && !isScrolling.current && !editorialeRef.current && !immagineModeRef.current) {
+      if (Math.abs(delta) > 40 && !isScrolling.current && !editorialeRef.current && !cardApertaRef.current) {
         isScrolling.current = true
         setCurrentIndex(prev => delta > 0 ? Math.min(prev + 1, progetti.length - 1) : Math.max(prev - 1, 0))
         setTimeout(() => { isScrolling.current = false }, 1200)
@@ -339,7 +293,7 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
             return (
               <button
                 key={voce}
-                onClick={voce === 'LO STUDIO' ? onOpenStudio : voce === 'CONTATTI' ? onOpenContatti : undefined}
+                onClick={voce === 'LO STUDIO' ? onOpenStudio : voce === 'MATERIOTECA' ? onOpenMaterioteca : voce === 'CONTATTI' ? onOpenContatti : undefined}
                 onMouseEnter={() => setHoverVoce(voce)}
                 onMouseLeave={() => setHoverVoce(null)}
                 style={{
@@ -378,8 +332,7 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
 
       {/* ── Colonna sinistra ── */}
       <div
-        ref={containerSxRef}
-        onClick={handleImmagineClick}
+        onClick={apriCard}
         style={{ position: 'fixed', left: 0, top: 0, width: '50vw', height: '100vh', overflow: 'hidden', cursor: 'pointer' }}
       >
         <div ref={colonnaSxRef} style={{ willChange: 'transform' }}>
@@ -394,8 +347,7 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
 
       {/* ── Colonna destra (stack inverso) ── */}
       <div
-        ref={containerDxRef}
-        onClick={handleImmagineClick}
+        onClick={apriCard}
         style={{ position: 'fixed', right: 0, top: 0, width: '50vw', height: '100vh', overflow: 'hidden', cursor: 'pointer' }}
       >
         <div ref={colonnaDxRef} style={{ willChange: 'transform' }}>
@@ -411,7 +363,6 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
       {/* ── Card centrale ── */}
       <div
         ref={cardRef}
-        onClick={handleCardClick}
         style={{
           position: 'fixed', top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
@@ -420,7 +371,6 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
           backgroundColor: p0.cardBg,
           borderRadius: 0,
           display: 'flex', alignItems: 'center', gap: 36,
-          cursor: 'pointer',
         }}
       >
         <img
@@ -442,61 +392,13 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
           <div
             ref={materialeRef}
             style={{
-              fontFamily: archivo, fontSize: 13, fontStyle: 'italic',
+              fontFamily: archivo, fontSize: 13,
               letterSpacing: '0.3em', color: p0.accent, marginTop: 5,
             }}
           >
             {p0.materiale}
           </div>
         </div>
-      </div>
-
-      {/* ── Overlay immagine: testi + chiudi ── */}
-      <div
-        ref={overlayImgRef}
-        style={{
-          position: 'fixed', inset: 0, zIndex: 155,
-          pointerEvents: 'none',
-        }}
-      >
-        {/* Testi bottom-right */}
-        <div style={{
-          position: 'absolute', bottom: 80, right: 48,
-          textAlign: 'right',
-        }}>
-          <div style={{
-            fontFamily: archivo, fontSize: 72, fontWeight: 100,
-            letterSpacing: '0.05em', color: 'white', opacity: 0.9,
-            lineHeight: 1,
-          }}>
-            {progetti[currentIndex].nome}
-          </div>
-          <div style={{
-            fontFamily: archivo, fontSize: 12, fontWeight: 200,
-            letterSpacing: '0.3em', color: 'white', opacity: 0.6,
-            marginTop: 14, textTransform: 'uppercase',
-          }}>
-            {progetti[currentIndex].materiale}
-          </div>
-        </div>
-
-        {/* Bottone chiudi X */}
-        <button
-          onClick={handleChiudiImmagine}
-          onMouseEnter={e => e.currentTarget.style.opacity = 1}
-          onMouseLeave={e => e.currentTarget.style.opacity = 0.7}
-          style={{
-            position: 'absolute', top: 32, right: 32,
-            pointerEvents: 'auto',
-            fontFamily: archivo, fontSize: 24, fontWeight: 100,
-            color: 'white', background: 'none', border: 'none',
-            cursor: 'pointer', opacity: 0.7,
-            lineHeight: 1, padding: '4px 8px',
-            transition: 'opacity 0.2s ease',
-          }}
-        >
-          ✕
-        </button>
       </div>
 
       {/* ── Pannello editoriale (split-screen wipe) ── */}
@@ -575,6 +477,87 @@ export default function LandingPage({ onEnter, onOpenProgetti, onOpenStudio, onO
           </div>
         </div>
       </div>
+
+      {/* ── ProjectCard overlay ── */}
+      {cardAperta && (() => {
+        const p = progetti[currentIndex]
+        const edificioIsLeft = currentIndex % 2 !== 0
+        const imgEdificio = edificioIsLeft ? p.imgSinistra : p.imgDestra
+        const imgMateriale = edificioIsLeft ? p.imgDestra : p.imgSinistra
+        return (
+          <div style={{ position: 'fixed', inset: 0, zIndex: 300, display: 'flex' }}>
+            {/* Colonna sinistra: edificio */}
+            <div style={{
+              width: '60vw', height: '100vh', overflow: 'hidden', flexShrink: 0,
+              opacity: cardVisible ? 1 : 0,
+              transform: cardVisible ? 'scale(1)' : 'scale(1.03)',
+              transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}>
+              <img src={imgEdificio} alt=""
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', cursor: 'default' }} />
+            </div>
+
+            {/* Colonna destra: info */}
+            <div style={{
+              width: '40vw', height: '100vh', flexShrink: 0, boxSizing: 'border-box',
+              opacity: cardVisible ? 1 : 0,
+              transform: cardVisible ? 'translateX(0)' : 'translateX(100%)',
+              transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+              pointerEvents: cardVisible ? 'all' : 'none',
+              backgroundColor: p.cardBg,
+              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+              padding: '64px 48px',
+            }}>
+              {/* Top: logo */}
+              <img src="/logo.png" alt="" style={{ width: 120, filter: p.logoFilter }} />
+
+              {/* Centro: immagine materiale */}
+              <div>
+                <img src={imgMateriale} alt="" style={{
+                  width: 220, height: 220, objectFit: 'cover', display: 'block',
+                  border: `1px solid ${hexToRgba(p.accent, 0.4)}`,
+                }} />
+                <div style={{
+                  fontFamily: archivo, fontSize: 9, fontWeight: 200,
+                  letterSpacing: '0.4em', color: p.accent, opacity: 0.5, marginTop: 12,
+                }}>MATERIALE</div>
+              </div>
+
+              {/* Basso: testi + chiudi */}
+              <div>
+                <div style={{
+                  fontFamily: archivo, fontSize: 52, fontWeight: 100,
+                  letterSpacing: '0.05em', lineHeight: 1, color: p.accent,
+                }}>{p.nome}</div>
+                <div style={{
+                  fontFamily: archivo, fontSize: 11, fontWeight: 200,
+                  letterSpacing: '0.3em', color: p.accent, opacity: 0.6,
+                  marginTop: 16, textTransform: 'uppercase',
+                }}>{p.materiale}</div>
+                <div style={{
+                  fontFamily: archivo, fontSize: 11, fontWeight: 200,
+                  letterSpacing: '0.3em', color: p.accent, opacity: 0.4, marginTop: 8,
+                }}>{p.anno}</div>
+                {p.luogo ? (
+                  <div style={{
+                    fontFamily: archivo, fontSize: 11, fontWeight: 200,
+                    letterSpacing: '0.3em', color: p.accent, opacity: 0.4, marginTop: 8,
+                  }}>{p.luogo}</div>
+                ) : null}
+                <button
+                  onClick={chiudiCard}
+                  style={{
+                    marginTop: 32, fontFamily: archivo, fontSize: 9, fontWeight: 300,
+                    letterSpacing: '0.4em', color: p.accent,
+                    background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+                    borderBottom: `1px solid ${p.accent}`, paddingBottom: 4,
+                  }}
+                >← CHIUDI</button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* ── Selettore lingua ── */}
       <div style={{

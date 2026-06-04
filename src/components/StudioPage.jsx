@@ -1,11 +1,7 @@
-import { useState } from 'react'
-
 const archivo = "'Archivo', sans-serif"
 const marrone = '#2F1F11'
 const azzurro = '#91B0D9'
 const oro = '#F2C879'
-
-const MENU = ['LO STUDIO', 'PROGETTI', 'MATERIOTECA', 'COLLABORATORI', 'CALENDARIO', 'CONTATTI']
 
 const TIMELINE = [
   { anno: '1985', testo: 'Fondazione dello studio ad Anzio' },
@@ -40,8 +36,6 @@ function TimelineVoce({ anno, testo }) {
 }
 
 export default function StudioPage({ onBack }) {
-  const [hoverVoce, setHoverVoce] = useState(null)
-
   return (
     <div style={{
       position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
@@ -50,47 +44,71 @@ export default function StudioPage({ onBack }) {
 
       {/* ── Header ── */}
       <div style={{
-        position: 'sticky', top: 0, zIndex: 100,
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '16px 40px',
-        background: 'rgba(145, 176, 217, 0.85)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
+        padding: '24px 32px',
+        background: 'transparent',
         boxSizing: 'border-box',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-          <button
-            onClick={onBack}
-            style={{
-              fontFamily: archivo, fontSize: 9, fontWeight: 200,
-              letterSpacing: '0.3em', color: marrone,
-              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-              opacity: 0.6,
-            }}
-          >
-            ← INDIETRO
-          </button>
-          <img src="/logo.png" alt="Archivio Mastrella" style={{ width: 140 }} />
+        <img src="/logo.png" alt="Archivio Mastrella" style={{ width: 140, filter: 'brightness(0) saturate(100%) invert(83%) sepia(30%) saturate(600%) hue-rotate(340deg) brightness(1.05)' }} />
+        <button
+          onClick={onBack}
+          style={{
+            fontFamily: archivo, fontSize: 9, fontWeight: 200,
+            letterSpacing: '0.3em', color: oro,
+            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+            opacity: 0.6,
+          }}
+        >
+          ← INDIETRO
+        </button>
+      </div>
+
+      {/* ── Sezione Video ── */}
+      <style>{`
+        @keyframes bounce {
+          0%, 100% { transform: translateX(-50%) translateY(0); }
+          50% { transform: translateX(-50%) translateY(10px); }
+        }
+      `}</style>
+      <div style={{ height: '100vh', position: 'relative', overflow: 'hidden' }}>
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          style={{ width: '100%', height: '100vh', objectFit: 'cover', display: 'block' }}
+        >
+          {/* Sostituire con /video/heritage.mp4 quando disponibile */}
+          <source src="https://videos.pexels.com/video-files/3209828/3209828-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+        </video>
+
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(to bottom, rgba(47,31,17,0.3) 0%, rgba(47,31,17,0.6) 100%)',
+        }} />
+
+        <div style={{ position: 'absolute', bottom: 80, left: 64 }}>
+          <div style={{
+            fontFamily: archivo, fontSize: 11, fontWeight: 200,
+            letterSpacing: '0.5em', color: oro, opacity: 0.7, marginBottom: 16,
+          }}>
+            ARCHIVIO MASTRELLA
+          </div>
+          <div style={{
+            fontFamily: archivo, fontSize: 72, fontWeight: 100,
+            letterSpacing: '0.05em', color: oro, lineHeight: 1,
+          }}>
+            1985 — OGGI
+          </div>
         </div>
 
-        <nav style={{ display: 'flex', alignItems: 'center', gap: 40 }}>
-          {MENU.map(voce => (
-            <button
-              key={voce}
-              onMouseEnter={() => setHoverVoce(voce)}
-              onMouseLeave={() => setHoverVoce(null)}
-              style={{
-                fontFamily: archivo, fontSize: 11, fontWeight: 400,
-                letterSpacing: '0.25em', color: marrone,
-                background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-                borderBottom: hoverVoce === voce ? `0.5px solid ${marrone}` : '0.5px solid transparent',
-                transition: 'border-color 0.2s ease',
-              }}
-            >
-              {voce}
-            </button>
-          ))}
-        </nav>
+        <div style={{
+          position: 'absolute', bottom: 32, left: '50%',
+          transform: 'translateX(-50%)',
+          color: oro, opacity: 0.5, fontSize: 24,
+          animation: 'bounce 2s ease-in-out infinite',
+        }}>↓</div>
       </div>
 
       {/* ── Sezione 1 — CHI SIAMO ── */}

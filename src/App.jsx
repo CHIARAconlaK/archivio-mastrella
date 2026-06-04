@@ -8,6 +8,7 @@ import LandingPage from './components/LandingPage'
 import ProgettiPage from './components/ProgettiPage'
 import StudioPage from './components/StudioPage'
 import ContattiPage from './components/ContattiPage'
+import MateriotecaPage from './components/MateriotecaPage'
 
 export default function App() {
   const [vista, setVista] = useState('landing')
@@ -20,6 +21,7 @@ export default function App() {
         onEnter={() => setVista('archivio')}
         onOpenProgetti={(f) => { setFiltroProgetti(f); setVista('progetti') }}
         onOpenStudio={() => setVista('studio')}
+        onOpenMaterioteca={() => setVista('materioteca')}
         onOpenContatti={() => setVista('contatti')}
       />
     )
@@ -36,6 +38,10 @@ export default function App() {
 
   if (vista === 'studio') {
     return <StudioPage onBack={() => setVista('landing')} />
+  }
+
+  if (vista === 'materioteca') {
+    return <MateriotecaPage onBack={() => setVista('landing')} />
   }
 
   if (vista === 'contatti') {
