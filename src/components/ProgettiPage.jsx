@@ -14,16 +14,182 @@ const ANNI = Array.from({ length: 2026 - 1985 + 1 }, (_, i) => 1985 + i)
 
 const ANNO_CORRENTE = 2026
 
-const placeholders = [
-  "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=400",
-  "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=400",
-  "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400",
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400",
-  "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400",
-  "https://images.unsplash.com/photo-1449844908441-8829872d2607?w=400",
-  "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400",
-  "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=400",
+const timelineImmagini = [
+  '/timeline/IMG_7589.JPG',  // 0  mattone
+  '/timeline/IMG_7580.JPG',  // 1  legno noce
+  '/timeline/IMG_7570.JPG',  // 2  marmo rosso
+  '/timeline/IMG_7604.JPG',  // 3  zinco
+  '/timeline/IMG_7619.JPG',  // 4  intonaco
+  '/timeline/IMG_7581.JPG',  // 5  teak
+  '/timeline/IMG_7571.JPG',  // 6  marmo verde
+  '/timeline/IMG_7605.JPG',  // 7  corten
+  '/timeline/IMG_7621.JPG',  // 8  lino
+  '/timeline/IMG_7607.JPG',  // 9  rovere
+  '/timeline/IMG_7572.JPG',  // 10 onice
+  '/timeline/IMG_7601.JPG',  // 11 rame
+  '/timeline/IMG_7620.JPG',  // 12 stucco
+  '/timeline/IMG_7608.JPG',  // 13 wenge
+  '/timeline/IMG_7573.JPG',  // 14 marmo nero
+  '/timeline/IMG_7599.JPG',  // 15 vetro satinato
+  '/timeline/IMG_7623.JPG',  // 16 rafia
+  '/timeline/IMG_7609.JPG',  // 17 iroko
+  '/timeline/IMG_7574.JPG',  // 18 agata
+  '/timeline/IMG_7602.JPG',  // 19 ottone brunito
+  '/timeline/IMG_7618.JPG',  // 20 pietra grigia
+  '/timeline/IMG_7610.JPG',  // 21 mogano
+  '/timeline/IMG_7575.JPG',  // 22 marmo arabescato
+  '/timeline/IMG_7582.JPG',  // 23 acciaio
+  '/timeline/IMG_7624.JPG',  // 24 pietra bianca
+  '/timeline/IMG_7611.JPG',  // 25 ciliegio
+  '/timeline/IMG_7576.JPG',  // 26 lapislazzuli
+  '/timeline/IMG_7603.JPG',  // 27 rame ossidato
+  '/timeline/IMG_7625.JPG',  // 28 travertino
+  '/timeline/IMG_7612.JPG',  // 29 pino
+  '/timeline/IMG_7577.JPG',  // 30 malachite
+  '/timeline/IMG_7586.JPG',  // 31 vetro
+  '/timeline/IMG_7626.JPG',  // 32 stucco 2
+  '/timeline/IMG_7613.JPG',  // 33 bambù
+  '/timeline/IMG_7578.JPG',  // 34 quarzo rosa
+  '/timeline/IMG_7584.JPG',  // 35 pietra grigia
+  '/timeline/IMG_7627.JPG',  // 36 pietra
+  '/timeline/IMG_7616.JPG',  // 37 pietra lavica
+  '/timeline/IMG_7579.JPG',  // 38 ametista
+  '/timeline/IMG_7585.JPG',  // 39 ottone
+  '/timeline/IMG_7628.JPG',  // 40 calcestruzzo
+  '/timeline/IMG_7617.JPG',  // 41 pietra basaltina
+  '/timeline/IMG_7590.JPG',  // 42 ardesia
+  '/timeline/IMG_7600.JPG',  // 43 cristallo
+  '/timeline/IMG_7629.JPG',  // 44 pietra
+  '/timeline/IMG_7594.JPG',  // 45 travertino
+  '/timeline/IMG_7591.JPG',  // 46 basalto
+  '/timeline/IMG_7587.JPG',  // 47 cemento
+  '/timeline/IMG_7630.JPG',  // 48 pietra
+  '/timeline/IMG_7595.JPG',  // 49 pietra bianca
+  '/timeline/IMG_7592.JPG',  // 50 granito
+  '/timeline/IMG_7588.JPG',  // 51 pietra calcarea
+  '/timeline/IMG_7631.JPG',  // 52 ardesia 2
+  '/timeline/IMG_7596.JPG',  // 53 calcestruzzo
+  '/timeline/IMG_7606.JPG',  // 54 legno scuro
+  '/timeline/IMG_7632.JPG',  // 55 basalto 2
+  '/timeline/IMG_7597.JPG',  // 56 corten
+  '/timeline/IMG_7622.JPG',  // 57 bambù 2
+  '/timeline/IMG_7583.AVIF', // 58 texture
+  '/timeline/IMG_7593.AVIF', // 59 texture
+  '/timeline/IMG_7598.AVIF', // 60 texture
+  '/timeline/IMG_7614.AVIF', // 61 texture
+  '/timeline/IMG_7615.AVIF', // 62 texture
+  '/timeline/IMG_7633.AVIF', // 63 texture
 ]
+
+// 64 immagini, 42 anni — 4×3 + 14×2 + 24×1 = 64 ✓
+const T = timelineImmagini
+const immaginiPerAnno = {
+  1985: [T[0],  T[1]],
+  1986: [T[2]],
+  1987: [T[3],  T[4]],
+  1988: [T[5]],
+  1989: [T[6],  T[7]],
+  1990: [T[8]],
+  1991: [T[9],  T[10]],
+  1992: [T[11]],
+  1993: [T[12]],
+  1994: [T[13]],
+  1995: [T[14], T[15], T[16]], // 3 imgs
+  1996: [T[17]],
+  1997: [T[18], T[19]],
+  1998: [T[20]],
+  1999: [T[21], T[22]],
+  2000: [T[23], T[24], T[25]], // 3 imgs
+  2001: [T[26]],
+  2002: [T[27], T[28]],
+  2003: [T[29]],
+  2004: [T[30], T[31]],
+  2005: [T[32]],
+  2006: [T[33], T[34]],
+  2007: [T[35]],
+  2008: [T[36], T[37]],
+  2009: [T[38]],
+  2010: [T[39], T[40], T[41]], // 3 imgs
+  2011: [T[42]],
+  2012: [T[43], T[44]],
+  2013: [T[45]],
+  2014: [T[46], T[47]],
+  2015: [T[48]],
+  2016: [T[49], T[50]],
+  2017: [T[51]],
+  2018: [T[52]],
+  2019: [T[53]],
+  2020: [T[54], T[55], T[56]], // 3 imgs
+  2021: [T[57]],
+  2022: [T[58], T[59]],
+  2023: [T[60]],
+  2024: [T[61]],
+  2025: [T[62]],
+  2026: [T[63]],
+}
+
+const materialiReali = [
+  { nome: 'MARMO ROSSO',      img: '/timeline/IMG_7570.JPG', progetto: 'VILLA ROMANA',        anno: '2018', categoria: 'MARMI'   },
+  { nome: 'MARMO VERDE',      img: '/timeline/IMG_7571.JPG', progetto: 'RESIDENZA TOSCANA',   anno: '2015', categoria: 'MARMI'   },
+  { nome: 'ONICE',            img: '/timeline/IMG_7572.JPG', progetto: 'SUITE DUBAI',         anno: '2021', categoria: 'MARMI'   },
+  { nome: 'MARMO NERO',       img: '/timeline/IMG_7573.JPG', progetto: 'SHOWROOM MILANO',     anno: '2019', categoria: 'MARMI'   },
+  { nome: 'AGATA',            img: '/timeline/IMG_7574.JPG', progetto: 'VILLA CAPRI',         anno: '2022', categoria: 'MARMI'   },
+  { nome: 'MARMO ARABESCATO', img: '/timeline/IMG_7575.JPG', progetto: 'HOTEL AMALFI',        anno: '2017', categoria: 'MARMI'   },
+  { nome: 'LAPISLAZZULI',     img: '/timeline/IMG_7576.JPG', progetto: 'PALAZZO VENEZIA',     anno: '2016', categoria: 'MARMI'   },
+  { nome: 'MALACHITE',        img: '/timeline/IMG_7577.JPG', progetto: 'VILLA MUMBAI',        anno: '2023', categoria: 'MARMI'   },
+  { nome: 'QUARZO ROSA',      img: '/timeline/IMG_7578.JPG', progetto: 'RESIDENZA ANZIO',     anno: '2020', categoria: 'MARMI'   },
+  { nome: 'AMETISTA',         img: '/timeline/IMG_7579.JPG', progetto: 'SUITE ABU DHABI',     anno: '2022', categoria: 'MARMI'   },
+  { nome: 'LEGNO NOCE',       img: '/timeline/IMG_7580.JPG', progetto: 'VILLA CORTINA',       anno: '2014', categoria: 'LEGNI'   },
+  { nome: 'TEAK BURMA',       img: '/timeline/IMG_7581.JPG', progetto: 'VILLA PALM JUMEIRAH', anno: '2022', categoria: 'LEGNI'   },
+  { nome: 'ACCIAIO',          img: '/timeline/IMG_7582.JPG', progetto: 'UFFICIO ROMA',        anno: '2018', categoria: 'METALLI' },
+  { nome: 'PIETRA GRIGIA',    img: '/timeline/IMG_7584.JPG', progetto: 'CASA SUL MARE',       anno: '2016', categoria: 'PIETRE'  },
+  { nome: 'OTTONE',           img: '/timeline/IMG_7585.JPG', progetto: 'HOTEL FIRENZE',       anno: '2019', categoria: 'METALLI' },
+  { nome: 'VETRO',            img: '/timeline/IMG_7586.JPG', progetto: 'TORRE UFFICI',        anno: '2021', categoria: 'METALLI' },
+  { nome: 'CEMENTO',          img: '/timeline/IMG_7587.JPG', progetto: 'VILLA AHMEDABAD',     anno: '2022', categoria: 'PIETRE'  },
+  { nome: 'PIETRA CALCAREA',  img: '/timeline/IMG_7588.JPG', progetto: 'MASSERIA PUGLIA',     anno: '2015', categoria: 'PIETRE'  },
+  { nome: 'MATTONE',          img: '/timeline/IMG_7589.JPG', progetto: 'STUDIO MASTRELLA',    anno: '2013', categoria: 'PIETRE'  },
+  { nome: 'ARDESIA',          img: '/timeline/IMG_7590.JPG', progetto: 'CASA LAGO COMO',      anno: '2017', categoria: 'PIETRE'  },
+  { nome: 'BASALTO',          img: '/timeline/IMG_7591.JPG', progetto: 'VILLA SICILIA',       anno: '2014', categoria: 'PIETRE'  },
+  { nome: 'GRANITO',          img: '/timeline/IMG_7592.JPG', progetto: 'PALAZZO GENOVA',      anno: '2016', categoria: 'PIETRE'  },
+  { nome: 'TRAVERTINO',       img: '/timeline/IMG_7594.JPG', progetto: 'VILLA PALM JUMEIRAH', anno: '2019', categoria: 'PIETRE'  },
+  { nome: 'PIETRA BIANCA',    img: '/timeline/IMG_7595.JPG', progetto: 'RESIDENZA GRECIA',    anno: '2020', categoria: 'PIETRE'  },
+  { nome: 'CALCESTRUZZO',     img: '/timeline/IMG_7596.JPG', progetto: 'MUSEO CONTEMPORANEO', anno: '2018', categoria: 'PIETRE'  },
+  { nome: 'CORTEN',           img: '/timeline/IMG_7597.JPG', progetto: 'PADIGLIONE DUBAI',    anno: '2021', categoria: 'METALLI' },
+  { nome: 'VETRO SATINATO',   img: '/timeline/IMG_7599.JPG', progetto: 'SHOWROOM TORINO',     anno: '2023', categoria: 'METALLI' },
+  { nome: 'CRISTALLO',        img: '/timeline/IMG_7600.JPG', progetto: 'SUITE BEVERLY HILLS', anno: '2019', categoria: 'METALLI' },
+  { nome: 'RAME',             img: '/timeline/IMG_7601.JPG', progetto: 'VILLA UMBRIA',        anno: '2015', categoria: 'METALLI' },
+  { nome: 'OTTONE BRUNITO',   img: '/timeline/IMG_7602.JPG', progetto: 'UFFICIO AZIENDALE',   anno: '2021', categoria: 'METALLI' },
+  { nome: 'RAME OSSIDATO',    img: '/timeline/IMG_7603.JPG', progetto: 'CASA COLONICA',       anno: '2016', categoria: 'METALLI' },
+  { nome: 'ZINCO',            img: '/timeline/IMG_7604.JPG', progetto: 'VILLA NORDICA',       anno: '2020', categoria: 'METALLI' },
+  { nome: 'ACCIAIO CORTEN',   img: '/timeline/IMG_7605.JPG', progetto: 'PADIGLIONE EXPO',     anno: '2022', categoria: 'METALLI' },
+  { nome: 'LEGNO SCURO',      img: '/timeline/IMG_7606.JPG', progetto: 'CHALET CORTINA',      anno: '2018', categoria: 'LEGNI'   },
+  { nome: 'ROVERE',           img: '/timeline/IMG_7607.JPG', progetto: 'VILLA TOSCANA',       anno: '2017', categoria: 'LEGNI'   },
+  { nome: 'WENGE',            img: '/timeline/IMG_7608.JPG', progetto: 'PENTHOUSE DUBAI',     anno: '2023', categoria: 'LEGNI'   },
+  { nome: 'IROKO',            img: '/timeline/IMG_7609.JPG', progetto: 'VILLA SARDEGNA',      anno: '2014', categoria: 'LEGNI'   },
+  { nome: 'MOGANO',           img: '/timeline/IMG_7610.JPG', progetto: 'YACHT CLUB',          anno: '2016', categoria: 'LEGNI'   },
+  { nome: 'CILIEGIO',         img: '/timeline/IMG_7611.JPG', progetto: 'STUDIO PRIVATO',      anno: '2019', categoria: 'LEGNI'   },
+  { nome: 'PINO',             img: '/timeline/IMG_7612.JPG', progetto: 'RIFUGIO MONTAGNA',    anno: '2020', categoria: 'LEGNI'   },
+  { nome: 'BAMBÙ',            img: '/timeline/IMG_7613.JPG', progetto: 'RESORT INDIA',        anno: '2022', categoria: 'LEGNI'   },
+  { nome: 'PIETRA LAVICA',    img: '/timeline/IMG_7616.JPG', progetto: 'VILLA ETNA',          anno: '2018', categoria: 'PIETRE'  },
+  { nome: 'PIETRA BASALTINA', img: '/timeline/IMG_7617.JPG', progetto: 'SPA LUXURY',          anno: '2021', categoria: 'PIETRE'  },
+  { nome: 'PIETRA GRIGIA 2',  img: '/timeline/IMG_7618.JPG', progetto: 'CASA LAGO',           anno: '2015', categoria: 'PIETRE'  },
+  { nome: 'INTONACO',         img: '/timeline/IMG_7619.JPG', progetto: 'MASSERIA SALENTO',    anno: '2017', categoria: 'PIETRE'  },
+  { nome: 'STUCCO',           img: '/timeline/IMG_7620.JPG', progetto: 'PALAZZO STORICO',     anno: '2013', categoria: 'PIETRE'  },
+  { nome: 'LINO',             img: '/timeline/IMG_7621.JPG', progetto: 'VILLA PROVENZA',      anno: '2019', categoria: 'TESSUTI' },
+  { nome: 'BAMBÙ 2',          img: '/timeline/IMG_7622.JPG', progetto: 'RESORT MUMBAI',       anno: '2023', categoria: 'LEGNI'   },
+  { nome: 'RAFIA',            img: '/timeline/IMG_7623.JPG', progetto: 'VILLA MAROCCO',       anno: '2020', categoria: 'TESSUTI' },
+  { nome: 'PIETRA BIANCA 2',  img: '/timeline/IMG_7624.JPG', progetto: 'VILLA GRECIA',        anno: '2016', categoria: 'PIETRE'  },
+  { nome: 'TRAVERTINO 2',     img: '/timeline/IMG_7625.JPG', progetto: 'RESIDENZA ROMANA',    anno: '2014', categoria: 'PIETRE'  },
+  { nome: 'STUCCO 2',         img: '/timeline/IMG_7626.JPG', progetto: 'VILLA VENEZIANA',     anno: '2018', categoria: 'PIETRE'  },
+  { nome: 'PIETRA 3',         img: '/timeline/IMG_7627.JPG', progetto: 'CASA LIGURIA',        anno: '2021', categoria: 'PIETRE'  },
+  { nome: 'CALCESTRUZZO 2',   img: '/timeline/IMG_7628.JPG', progetto: 'GALLERIA ARTE',       anno: '2022', categoria: 'PIETRE'  },
+  { nome: 'PIETRA 4',         img: '/timeline/IMG_7629.JPG', progetto: 'VILLA COSTIERA',      anno: '2017', categoria: 'PIETRE'  },
+  { nome: 'PIETRA 5',         img: '/timeline/IMG_7630.JPG', progetto: 'CASA CAMPAGNA',       anno: '2015', categoria: 'PIETRE'  },
+  { nome: 'ARDESIA 2',        img: '/timeline/IMG_7631.JPG', progetto: 'VILLA PIEMONTE',      anno: '2019', categoria: 'PIETRE'  },
+  { nome: 'BASALTO 2',        img: '/timeline/IMG_7632.JPG', progetto: 'RESIDENZA ETNA',      anno: '2023', categoria: 'PIETRE'  },
+]
+
+const CAT_MATERIALI = ['TUTTI', 'PIETRE', 'MARMI', 'LEGNI', 'METALLI', 'TESSUTI']
 
 const TIPO_FILTRO_KEY = {
   ANNO: 'anno',
@@ -92,7 +258,7 @@ function FiltroVoce({ label, attivo, onClick }) {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        fontFamily: archivo, fontSize: 9, fontWeight: 600,
+        fontFamily: archivo, fontSize: 11, fontWeight: 500,
         color: celeste,
         background: 'none', border: 'none', cursor: 'pointer', padding: 0,
         opacity: attivo || hover ? 1 : 0.5,
@@ -168,6 +334,61 @@ function CardLuogo({ progetto }) {
         }}>
           {progetto.anno} · {progetto.luogo}
         </div>
+      </div>
+    </div>
+  )
+}
+
+function CardMateriale({ materiale }) {
+  const [hover, setHover] = useState(false)
+
+  return (
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{ overflow: 'hidden', cursor: 'default' }}
+    >
+      <div style={{ aspectRatio: '1/1', overflow: 'hidden', position: 'relative' }}>
+        <img
+          src={materiale.img}
+          alt={materiale.nome}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        />
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: marrone,
+          opacity: hover ? 0.7 : 0,
+          transition: 'opacity 0.3s ease',
+        }} />
+      </div>
+      <div style={{
+        background: marrone,
+        padding: '10px 14px',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        gap: 8,
+      }}>
+        <span style={{
+          fontFamily: archivo, fontSize: 10, fontWeight: 600,
+          letterSpacing: '0.2em', color: celeste,
+          textTransform: 'uppercase', flexShrink: 0,
+        }}>
+          {materiale.nome}
+        </span>
+        <span style={{
+          fontFamily: archivo, fontSize: 9, fontWeight: 300,
+          color: oro, opacity: 0.7,
+          textAlign: 'center', flexGrow: 1,
+          letterSpacing: '0.1em', textTransform: 'uppercase',
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+        }}>
+          {materiale.progetto}
+        </span>
+        <span style={{
+          fontFamily: archivo, fontSize: 10, fontWeight: 300,
+          color: celeste, opacity: 0.5, flexShrink: 0,
+        }}>
+          {materiale.anno}
+        </span>
       </div>
     </div>
   )
@@ -295,24 +516,30 @@ function TimelineProgetti({ progetti, annoSelezionato }) {
   )
 }
 
-function NodoAnno({ anno, progetto, isSelected, isAbove, visibile, delay, onClick }) {
+function NodoAnno({ anno, progetto, imgs, isSelected, isAbove, visibile, delay, onClick }) {
   const isPlaceholder = !!progetto?.isPlaceholder
   const hasProject = !!progetto && !isPlaceholder
   const isFuturo = anno > 2028
-  const width = progetto ? 340 : 80
+  const imgsWidth = imgs.length * 180 + (imgs.length - 1) * 4
+  const contentWidth = Math.max(imgsWidth, 200)
+  const width = progetto ? contentWidth + 60 : 80
   const dotSize = isSelected ? 14 : (progetto ? 8 : 4)
 
   const imgBlock = progetto ? (
-    <div style={{ width: 280, height: 180, overflow: 'hidden', position: 'relative' }}>
-      <img
-        src={progetto.img}
-        alt={progetto.titolo}
-        className="timeline-img"
-        style={{
-          width: '100%', height: '100%', objectFit: 'cover', display: 'block',
-          border: isSelected ? '1px solid rgba(145,176,217,0.5)' : 'none',
-        }}
-      />
+    <div style={{ position: 'relative', display: 'flex', flexDirection: 'row', gap: 4 }}>
+      {imgs.map((src, idx) => (
+        <img
+          key={idx}
+          src={src}
+          alt=""
+          className="timeline-img"
+          style={{
+            width: 180, height: 180, objectFit: 'cover', flexShrink: 0,
+            display: 'block',
+            border: isSelected && idx === 0 ? '1px solid rgba(145,176,217,0.5)' : 'none',
+          }}
+        />
+      ))}
       {isFuturo && isPlaceholder && (
         <div style={{
           position: 'absolute', inset: 0,
@@ -330,23 +557,13 @@ function NodoAnno({ anno, progetto, isSelected, isAbove, visibile, delay, onClic
     </div>
   ) : null
 
-  // isAbove:  [categoria] → [titolo] → [immagine] (immagine più vicina alla linea)
-  // !isAbove: [immagine] → [titolo] → [categoria] (immagine più vicina alla linea)
   const projectContent = progetto ? (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {isAbove && (
         <div style={{
-          fontFamily: archivo, fontSize: 8, fontWeight: 300, color: celeste, opacity: 0.6,
-          textAlign: 'center', width: 280, marginBottom: 4,
-        }}>
-          {progetto.categoria}
-        </div>
-      )}
-      {isAbove && (
-        <div style={{
-          fontFamily: archivo, fontSize: 9, fontWeight: 600,
+          fontFamily: archivo, fontSize: 11, fontWeight: 600,
           color: celeste, textAlign: 'center',
-          width: 280, marginBottom: 8,
+          width: contentWidth, marginBottom: 8,
         }}>
           {progetto.titolo}
         </div>
@@ -354,19 +571,11 @@ function NodoAnno({ anno, progetto, isSelected, isAbove, visibile, delay, onClic
       {imgBlock}
       {!isAbove && (
         <div style={{
-          fontFamily: archivo, fontSize: 9, fontWeight: 600,
+          fontFamily: archivo, fontSize: 11, fontWeight: 600,
           color: celeste, textAlign: 'center',
-          width: 280, marginTop: 8,
+          width: contentWidth, marginTop: 8,
         }}>
           {progetto.titolo}
-        </div>
-      )}
-      {!isAbove && (
-        <div style={{
-          fontFamily: archivo, fontSize: 8, fontWeight: 300, color: celeste, opacity: 0.6,
-          textAlign: 'center', width: 280, marginTop: 4,
-        }}>
-          {progetto.categoria}
         </div>
       )}
     </div>
@@ -375,7 +584,7 @@ function NodoAnno({ anno, progetto, isSelected, isAbove, visibile, delay, onClic
   const annoEl = (
     <div style={{
       fontFamily: archivo,
-      fontSize: progetto ? 48 : 10,
+      fontSize: progetto ? 58 : 10,
       fontWeight: progetto ? 600 : 300,
       color: celeste,
       opacity: progetto ? 1 : 0.3,
@@ -490,8 +699,8 @@ function TimelineLayout({ progetti, annoSelezionato, onSelectAnno }) {
   const btnStyle = (isLeft) => ({
     position: 'absolute', top: '50%', transform: 'translateY(-50%)',
     [isLeft ? 'left' : 'right']: 8, zIndex: 10,
-    background: marrone, border: `1px solid rgba(145,176,217,0.3)`,
-    color: celeste, fontSize: 18, cursor: 'pointer', padding: '12px 16px', lineHeight: 1,
+    background: celeste, border: 'none',
+    color: marrone, fontSize: 18, fontWeight: 600, cursor: 'pointer', padding: '12px 16px', lineHeight: 1,
   })
 
   return (
@@ -531,9 +740,10 @@ function TimelineLayout({ progetti, annoSelezionato, onSelectAnno }) {
           {anniTL.map((anno, i) => {
             const key = String(anno)
             const hasRealProject = !!progettiPerAnno[key]?.length
+            const imgs = immaginiPerAnno[anno] || [timelineImmagini[i % timelineImmagini.length]]
             const progetto = hasRealProject
               ? progettiPerAnno[key][0]
-              : { img: placeholders[anno % placeholders.length], titolo: 'ARCHIVIO ' + anno, categoria: 'archivio', isPlaceholder: true }
+              : { titolo: 'ARCHIVIO ' + anno, categoria: '', isPlaceholder: true }
             const isSelected = annoSelezionato === key
             const isAbove = i % 2 === 0
 
@@ -542,6 +752,7 @@ function TimelineLayout({ progetti, annoSelezionato, onSelectAnno }) {
                 key={anno}
                 anno={anno}
                 progetto={progetto}
+                imgs={imgs}
                 isSelected={isSelected}
                 isAbove={isAbove}
                 visibile={visibili}
@@ -669,6 +880,7 @@ function BotoneIndietro({ onClick, color, colorBg, style }) {
 export default function ProgettiPage({ filtroAttivo, onBack }) {
   const [categoria, setCategoria] = useState('TUTTI')
   const [filtroSec, setFiltroSec] = useState('tutti')
+  const [filtroCategoriaMat, setFiltroCategoriaMat] = useState('TUTTI')
 
   const tipoFiltro = TIPO_FILTRO_KEY[filtroAttivo] ?? null
   console.log('[ProgettiPage] filtroAttivo:', filtroAttivo, '→ tipoFiltro:', tipoFiltro)
@@ -727,14 +939,13 @@ export default function ProgettiPage({ filtroAttivo, onBack }) {
         borderBottom: `1px solid rgba(145,176,217,0.2)`,
       }}>
         {tipoFiltro === 'materiale' ? (
-          /* Filtro materiale: solo voci materiali, nessuna barra categorie */
           <div style={{ display: 'flex', alignItems: 'center', gap: 32, flexWrap: 'wrap' }}>
-            {vociSecondarie.map(v => (
+            {CAT_MATERIALI.map(v => (
               <FiltroMateriale
                 key={v}
                 label={v}
-                attivo={filtroSec === v}
-                onClick={() => handleFiltroSec(v)}
+                attivo={filtroCategoriaMat === v}
+                onClick={() => setFiltroCategoriaMat(v)}
               />
             ))}
           </div>
@@ -782,7 +993,18 @@ export default function ProgettiPage({ filtroAttivo, onBack }) {
       </div>
 
       {/* ── Contenuto principale ── */}
-      {tipoFiltro === 'anno' ? (
+      {tipoFiltro === 'materiale' ? (
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, 1fr)',
+          gap: 2, padding: 2,
+        }}>
+          {materialiReali
+            .filter(m => filtroCategoriaMat === 'TUTTI' || m.categoria === filtroCategoriaMat)
+            .map(m => <CardMateriale key={m.nome} materiale={m} />)
+          }
+        </div>
+      ) : tipoFiltro === 'anno' ? (
         <div style={{ background: marrone, width: '100%', minHeight: 'calc(100vh - 130px)', border: 'none' }}>
           <TimelineLayout
             progetti={progettiPerTimeline}
